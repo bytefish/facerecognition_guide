@@ -1,0 +1,553 @@
+@Comment {
+
+Typ :: Verwendung :: notwendige Eigenschaften :: Optionale Eigenschaften
+
+article :: Zeitungs- oder Zeitschriftenartikel :: author, title, journal, year :: volume, number, pages, month, note
+
+book ::	Buch ::	author or editor, title, publisher, year :: volume or number, series, address, edition, month, note
+
+phdthesis :: Doktor- oder andere Promotionsarbeit :: author, title, school, year :: type, address, month, note
+
+misc :: Wenn nichts anderes passt. :: - :: author, title, howpublished, month, year, note
+
+techreport :: veröffentlichter Bericht einer Hochschule oder anderen Institution ::	author, title, institution, year :: type, note, number, address, month
+
+BEISPIELE FÜR URL
+-----------------
+
+manual{KEITH,
+ author = "Keith Reckdahl",
+ title  = "Using Imported Graphics in \LaTeXe\ Documents",
+ year   = "1997",
+ month  = dec,
+ note   = "CTAN: \url{tex-archive/info/epslatex.ps}"}
+
+misc{GRANT,
+	author = "Michael C. Grant and David Carlisle",
+	title  = "The PSFrag system, version~3",
+	year   = "1996",
+	month  = nov,
+	howpublished = "CTAN: \url{tex-archive/macros/latex/contrib/%
+	supported/psfrag/pfgguide.tex}"}
+
+}
+
+@article{KKPCA,
+        AUTHOR = "Kim, K.I. and Jung, K.C. and Kim, H.J.",
+        TITLE = "Face recognition using kernel principal component analysis",
+        JOURNAL = SPLetters,
+        VOLUME = "9",
+        YEAR = "2002",
+        NUMBER = "2",
+        MONTH = "February",
+        PAGES = "40-42"
+}
+
+@article{Gottumukkal2004429,
+	title = "An improved face recognition technique based on modular PCA approach",
+	journal = "Pattern Recognition Letters",
+	volume = "25",
+	number = "4",
+	pages = "429 - 436",
+	year = "2004",
+	note = "",
+	issn = "0167-8655",
+	doi = "DOI: 10.1016/j.patrec.2003.11.005",
+	author = "Rajkiran Gottumukkal and Vijayan K. Asari"
+}
+
+@book{haykin08neural,
+    author = {Haykin, Simon},
+    edition = {3},
+    howpublished = {Hardcover},
+    isbn = {0131471392},
+    keywords = {neural\_networks},
+    month = {November},
+    posted-at = {2010-01-21 14:20:04},
+    priority = {2},
+    publisher = {Prentice Hall},
+    title = {Neural Networks and Learning Machines (3rd Edition)},
+    year = {2008},
+}
+
+@article{Wiskott97,
+    author = {Laurenz Wiskott and Jean-Marc Fellous and Norbert Krüger and Christoph Von Der Malsburg},
+    title = {Face Recognition By Elastic Bunch Graph Matching},
+    journal = {IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE},
+    year = {1997},
+    volume = {19},
+    pages = {775--779}
+}
+
+@article{Raudys1991, 
+	title = {Small sample size effects in statistical pattern recognition: Recommendations for practitioners.},
+	author = {S. J. Raudys \and A.K. Jain},
+	year = {1991},
+	journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence} ,
+	volume= {13},
+	number = {3},
+	pages = {252-264}
+}
+
+@PhDThesis{Kanade73,
+	title = {Picture processing system by computer complex and recognition of human faces},
+	author = {T. Kanade},
+	school = {Kyoto University},
+	month = {November},
+	year = {1973}
+}
+
+@PhDThesis{Wang04,
+	title = {Studies On Sensitivy Of Face Recognition Performance To Eye Location Accuracy},
+	author = {Haoshu Wang},
+	school = {Graduate School of the University of Notre Dame},
+	month = {November},
+	year = {2004},
+	address = {Notre Dame, Indiana, USA},
+}
+
+@article{Belhumeur2001,
+ author = {Athinodoros Georghiades and Peter Belhumeur and David Kriegman},
+ title = {From Few to Many: Illumination Cone Models for Face Recognition under Variable Lighting and Pose},
+ journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+ volume = {23},
+ number = {6},
+ year = {2001},
+ pages = {643-660},
+ publisher = {IEEE Computer Society},
+}
+
+@Article{Lee2005,
+	title = {Acquiring Linear Subspaces for Face Recognition under Variable Lighting},
+	author = {Kuang-Chih Lee and Jeffrey Ho and David Kriegman},
+	journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence (PAMI)},
+	year = {2005},
+	volume = {27},
+	number = {5}
+}
+
+@Techreport{Martinovsky2011,
+	title = {Gesichtserkennung mit Eigenfaces},
+	author = {Filip Martinovský and Philipp Wagner},
+	year = {2010}
+}
+
+@article{PT91,
+author = {M. Turk and A. Pentland},
+title={Eigenfaces for recognition.},
+year={1991},
+journal={Journal of Cognitive Neuroscience},
+volume={3},
+pages={71-86}
+}
+
+@book{Koecher03,
+author={Max Koecher},
+title={Lineare Algebra und Analytische Geometrie},
+publisher={Springer-Verlag Berlin Heidelberg},
+edition={4. Auflage},
+year={2003}
+}
+
+@misc{bsi03,
+title = {BioFace: Vergleichende Untersuchung von Gesichtserkennungssystemen}, 
+author={BSI, Bundesamt für Sicherheit in der Informationstechnik}, 
+year={2003},
+note={Öffentlicher Abschlussbericht BioFace I und II}
+}
+
+@article{belhumeru97,
+author = {Peter N. Belhumeur and João Hespanha and David Kriegman},
+title = {Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection},
+journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+volume={19},
+number={7},
+year={1997},
+pages={711-720}
+}
+
+@book{myers08,
+    author = {David G. Myers},
+    edition = {1},
+    howpublished = {Hardcover},
+    isbn = {9783540790327},
+    publisher = {Springer-Verlag Berlin Heidelberg},
+    title = {Psychologie},
+    year = {2008},
+} 	  		
+
+@article{ zhao2003frl,
+  title={{Face recognition: A literature survey}},
+  author={Zhao, W. and Chellappa, R. and Phillips, PJ and Rosenfeld, A.},
+  journal={Acm Computing Surveys (CSUR)},
+  volume={35},
+  number={4},
+  pages={399--458},
+  year={2003},
+  publisher={ACM New York, NY, USA}
+}
+
+@article{Tu06,
+author = {Chiara Turati, Viola Macchi Cassia, Francesca Simion and Irene Leo},
+title = {Newborns Face Recognition: Role of Inner and Outer Facial Features},
+journal={Child Development},
+volume={77},
+number={2},
+year={2006},
+pages={297-311}
+}
+
+@ARTICLE{Ojala02,
+    author = {Timo Ojala and Matti Pietikäinen and Topi Mäenpää},
+    title = {Multiresolution gray-scale and rotation invariant texture classification with local binary patterns},
+    journal = {IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE},
+    year = {2002},
+    volume = {24},
+    number = {7},
+    pages = {971--987}
+}
+
+@INPROCEEDINGS{Bru92,
+    author = {R. Brunelli and T. Poggio},
+    title = {Face Recognition through Geometrical Features},
+    booktitle = {European Conference on Computer Vision (ECCV)},
+    year = {1992},
+    pages = {792--800}
+}
+
+@Book{VC74,
+	author = "V. N. Vapnik and A. Ya. Chervonenkis",
+	title =	"Theory of Pattern Recognition [in Russian]",
+	publisher =	"Nauka",
+	year = 	1974,
+	address = 	"USSR",
+	abstract =	"Basis of vapnik's work"
+}
+
+@inproceedings{VC95,
+    author = {Cortes, Corinna and Vapnik, Vladimir},
+    booktitle = {Machine Learning},
+    pages = {273--297},
+    priority = {2},
+    title = {Support-Vector Networks},
+    volume = {20},
+    year = {1995}
+}
+
+@article{culloch1943,
+	author={W. McCulloch and W. Pitts},
+	title={A logical calculus of the ideas immanent in nervous activity.},
+ 	journal={Bulletin of Mathematical Biophysics},
+	volume={5},
+	year={1943},
+	pages={115-133}
+}
+
+@book{werbos1994,
+	author={P.J. Werbos},
+ 	title = {The Roots of Backpropagation: From ordered derivatives to Neural Networks and Political Forecasting},
+	publisher={John Wiley and Sons},
+	year={1994},
+	address={New York}
+}
+
+@article{Viola2001,
+	author={Paul Viola and Michael Jones},
+	title={Robust Real-time Object Detection},
+	journal={International Journal of Computer Vision},
+	volume={57},
+	number={2},
+	year={2001},
+	pages={137-154}
+}
+
+@phdthesis{Rodriguez2006,
+	author={Yann Rodriguez},
+	title={Face Detection and Verification using Local Binary Patterns},
+	school={École Polytechnique Fédérale De Lausanne},
+	year={2006},
+	month={October}
+}
+
+@article{Lienhart2002,
+	author={Rainer Lienhart and Jochen Maydt},
+	title={An Extended Set of Haar-like Features for Rapid Object Detection},
+	journal={IEEE ICIP 2002},
+	volume={1},
+	year={2002},
+	pages={900-903}
+}
+
+@article{frvt2010,
+	title={FRVT 2006 and ICE 2006 large-scale experimental results.},
+	author={Phillips, P.J. and Scruggs, W.T. and O'Toole, A.J. and Flynn, P.J. and Bowyer, K.W. and Schott, C.L. and Sharpe, M.},
+	journal={IEEE Trans Pattern Anal Mach Intell},
+	volume={32},
+	number={5},
+	pages={831-46},
+	year={2010}
+}
+
+@article{haar1910,
+	title={Zur Theorie der orthogonalen Funktionensysteme},
+	author={A. Haar},
+	journal={Mathematische Annalen},
+	volume={69},
+	pages={331-371},
+	year={1910}
+}
+
+@InProceedings{Schapire01,
+	author = {R. Schapire},
+	title = {The boosting approach to machine learning: An overview},
+	booktitle = {MSRI Workshop on Nonlinear Estimation and Classification},
+	publiher = {Berkeley, CA},
+	year = 2001
+}
+
+
+@article{Quinlan1986,
+ author = {Quinlan, J. R.},
+ title = {Induction of Decision Trees},
+ journal = {Mach. Learn.},
+ volume = {1},
+ issue = {1},
+ month = {March},
+ year = {1986},
+ issn = {0885-6125},
+ pages = {81--106},
+ numpages = {26},
+ url = {http://dl.acm.org/citation.cfm?id=637962.637969},
+ doi = {10.1023/A:1022643204877},
+ acmid = {637969},
+ publisher = {Kluwer Academic Publishers},
+ address = {Hingham, MA, USA}
+} 
+
+
+@INPROCEEDINGS{Messer06,
+    author = {Kieron Messer and Josef Kittler and James Short and G. Heusch and Fabien Cardinaux and Sebastien Marcel and Yann Rodriguez and Shiguang Shan and Y. Su and X. Chen},
+    title = {Performance Characterisation of Face Recognition Algorithms and Their Sensitivity to Severe Illumination Changes},
+    booktitle = {In: ICB},
+    year = {2006},
+    pages = {1--11}
+}
+
+@INPROCEEDINGS{Chen2000,
+	title={In search of illumination invariants},
+	author={H. F. Chen and P. N. Belhumeur and D. W. Jacobs},
+	booktitle={IEEE Computer Vision and Pattern Recognition},
+	year={2000},
+	pages={254-261}
+}
+
+@article{Chen2006,
+	author={T. Chen and W. Yin and X. Zhou and D. Comaniciu and T. Huang},
+	title={Total variation models for variable lighting face recognition},
+	year={2006},
+	journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+	pages={1519–1524},
+	volume = {28},
+	issue = {9},
+}
+
+@article{Tan10,
+	author={Xiaoyang Tan and Bill Triggs},
+	title={Enhanced Local Texture Feature Sets for Face Recognition Under Difficult Lighting Conditions},
+	year={2010},
+	journal={IEEE Transactions on Image Processing},
+	volume={19},
+	issue={6},
+	pages={1635-650 }
+}
+
+@article{Zheng2011,
+	author={Ji Zheng and Bao-Liang Lu},
+	title={A support vector machine classifier with automatic confidence and its application to gender classification},
+	journal={Elsevier Neurocomputing},
+	year={2011},
+	volume={74},
+	pages={1926–1935}
+}
+	
+@Article{Ahonen04,
+    author = {Timo Ahonen and Abdenour Hadid and Matti Pietikainen},
+    journal = {Computer Vision - ECCV 2004},
+    pages = {469--481},
+    title = {{Face Recognition with Local Binary Patterns}},
+    year = {2004}
+}
+
+@Article{Maturana09,
+	title = {Face Recognition with Local Binary Patterns, Spatial Pyramid Histograms and Naive Bayes Nearest Neighbor Classification},
+	author = {Daniel Maturana and Domingo Mery and Alvaro Soto},
+	journal = {2009 International Conference of the Chilean Computer Science Society (SCCC)},
+	year = {2009},
+	pages={125-132}
+}
+
+@Article{Huang2011,
+	title = {Local Binary Patterns and Its Application to Facial Image Analysis: A Survey},
+	author = {Di Huang and Caifeng Shan and Mohsen Ardabilian and Yunhong Wang and Liming Chen},
+	journal = {IEEE Transactions on Systems, Man, and Cybernetics, Part C: Applications and Reviews},
+	year = {2010}
+}
+
+@Article{Ojala1996,
+	title = {A comparative study of texture measures with classification based on featured distribution.},
+	author = {T. Ojala and M. Pietikäinen and D. Harwood},
+	journal = {IEEE Transactions on Pattern Recognition},
+	volume={29},
+	issue={1},
+	pages={51-59},
+	year = {1996}
+}
+
+@Article{Bianconi2011,
+	title = {On the Occurrence Probability of Local Binary Patterns: A Theoretical Study},
+	author = {Francesco Bianconi and Antonio Fernández},
+	journal = {Journal of Mathematical Imaging and Vision},
+	volume = {40},
+	issue = {3},
+	month = {July},
+	year = {2011}
+}
+
+@Article{Cardinaux2006,
+	title = {User Authentication via Adapted Statistical Models of Face Images},
+	author = {F. Cardinaux and C. Sanderson and S. Bengio},
+	journal = {IEEE Transactions on Signal Processing},
+	volume = {54},
+	issue = {1},
+	pages= {361-373},
+	month = {January},
+	year = {2006}
+}
+
+@Book{Vapnik1998,
+	author={V. Vapnik},
+	title = {Statistical Learning Theory},
+	year = {1998},
+	publisher = {John Wiley and Sons},
+	address={New York}
+}
+
+@Article{Veres2009,
+	title = {Recognition Of Briefly Presented Familiar And Unfamiliar Faces},
+	author = {Bozana Veres-Injac and Malte Persike},
+	journal = {Psihologija},
+	year = {2009},
+	volume={42},
+	issue={1},
+	pages={47-66}
+}
+
+@journal{Preprocessing10,
+  title={Robust face recognition based on illumination invariant in nonsubsampled contourlet transform domain}, 
+  author={Yong Cheng and Yingkun Hou and Chunxia Zhao and Zuoyong Li and Yong Hu and Cailing Wang},
+  journal={Neurocomputing},
+  volume={73},
+  year={2010},
+  pages={2217–2224}
+}
+
+@misc{Preprocessing04,
+	author={H. Ando and N. Fuchigami and M. Sasaki and A. Iwata},
+	title={Robust face recognition models under illumination variations toward hardware implementation on 3dcss},
+	year={2004}
+}
+	
+@PhDThesis{Chan2008,
+	title = {Multi-scale Local Binary Pattern Histogram for Face Recognition},
+	author = {Chi Ho Chan},
+	school = {University of Surrey, Guildford, Surrey, England},
+	year = {2008}
+}
+
+@Book{Klinke1996,
+	title = {Lehrbuch der Physiologie},
+	author = {R. Klinke and S. Silbernagel},
+	year = {1996},
+	publisher = {Georg Thieme Verlag, Stuttgart, New York}
+}
+
+\@Article{Kohavi1995,
+	title = {A study of cross-validation and bootstrap for accuracy estimation and model selection.},
+	author = {R. Kohavi},
+	year = {1995},
+	journal = {Proceedings of International Joint Conference on AI},
+	pages = {1137–1145}
+}
+
+@article{Hart1967,
+	author = {T.M. Cover and P.E. Hart},
+	title = {Nearest neighbor pattern classification},
+	journal = {IEEE Trans. Inform. Theory}, 
+	volume = {IT-13(1)},
+	pages = {21–27},
+	year = {1967}
+}
+
+@article{Fix1951,
+	author = {E. Fix and J.L. Hodges},
+	title={Discriminatory analysis, nonparametric discrimination: Consistency properties},
+	journal={USAF School of Aviation Medicine, Randolph Field},
+	volume={Technical Report 4},
+	year={1951}
+}
+
+@article {Ca2000,
+	author = {S. Bermejo and J. Cabestany},
+	title = {Adaptive soft k-nearest-neighbour classifiers},
+	journal = {Pattern Recognition}, 
+	volume = {33},
+	pages = {1999-2005},
+	year = {2000}
+}
+
+@Techreport{Arya95,
+ author = {Arya, Sunil and Mount, David M. and Netanyahu, Nathan S. and Silverman, Ruth and Wu, Angela Y.},
+ title = {An optimal algorithm for approximate nearest neighbor searching in fixed dimensions},
+ year = {1995},
+ source = {Center for Automation Research Report No. CAR-TR-802},
+ publisher = {University of Maryland at College Park},
+ address = {College Park, MD, USA},
+ }
+
+@Article{He2002,
+ author={Yunshuang He and Guojun Lu and ShyhWei Teng},
+ title={An Investigation of Using K-d Tree to Improve Image Retrieval Efficiency},
+ year={2002},
+ journal={Digital Image Computing Techniques and Application},
+ pages={21--22}
+}
+
+
+@Inproceedings{Xie2011, 
+	title={Use Bin-Ratio Information for Category and Scene Classification},
+	author={Nianhua Xie and Haibin Ling and Weiming Hu and Xiaoqin Zhang},
+	journal={IEEE Conference on  Computer Vision and Pattern Recognition},
+	pages = {2313-2319},
+	year = {2010}
+}
+
+@article{Fisher36,
+    author = {Fisher, Ronald A.},
+    journal = {Annals Eugen.},
+    pages = {179--188},
+    title = {{The use of multiple measurements in taxonomic problems}},
+    volume = {7},
+    year = {1936}
+}
+
+@book{Duda2001,
+    author = {Duda, Richard O. and Hart, Peter E. and Stork, David G.},
+    howpublished = {Hardcover},
+    edition = {2},
+    isbn = {0471056693},
+    month = {November},
+    title = {{Pattern Classification (2nd Edition)}},
+    year = {2001}
+}
+
+

@@ -1,0 +1,110 @@
+\documentclass[10pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+% rand
+\usepackage{geometry}
+\geometry{a4paper, top=25mm, left=30mm, right=25mm, bottom=30mm,
+         headsep=10mm, footskip=12mm}
+
+\usepackage{graphicx}
+\usepackage{url}
+
+\usepackage{graphicx}
+\usepackage[pdftex,colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+
+
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage{tabularx}
+
+\usepackage{listings}
+
+\usepackage{longtable}
+
+\usepackage[margin=10pt]{caption}
+
+% Der Titel
+\title{\begin{tabular}{p{11cm}}\centering
+Face Recognition with OpenCV2
+\end{tabular}}
+
+
+% contact details
+\author{Philipp Wagner\\\href{http://www.bytefish.de}{http://www.bytefish.de}}
+
+% colors for syntax highlightning
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.6,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+
+
+% Listings Style
+\lstset{
+	numberstyle=\footnotesize, 
+	basicstyle=\footnotesize\ttfamily
+	numbers=left, 
+	numbersep=5pt, 
+	frame=single
+}
+
+% Add basic syntax highlightning to C++
+\lstset{
+	numberstyle=\footnotesize, 
+	basicstyle=\footnotesize\ttfamily,
+	numbers=none, 
+	numbersep=5pt, 
+	frame=single,
+	breaklines=true,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+}
+
+\lstloadlanguages{C++}
+\lstset{
+	language=C++,
+  commentstyle=\footnotesize\ttfamily\color{darkgreen},
+  keywordstyle=\footnotesize\ttfamily\color{darkblue},
+  stringstyle=\footnotesize\ttfamily\color{darkred},
+}
+
+\lstdefinelanguage{cmake}{
+	morekeywords={cmake_minimum_required, project, find\_package, add\_executable, target\_link\_libraries},
+	sensitive=false,
+	morecomment=[l]{\#},
+}
+
+% change vertical space of itemize, description and enumeration environments
+\let\olditemize=\itemize
+   \def\itemize{\olditemize\setlength{\itemsep}{-0.5ex}}
+\let\oldenumerate=\enumerate
+   \def\enumerate{\oldenumerate\setlength{\itemsep}{-0.5ex}}
+\let\olddescription=\description
+   \def\description{\olddescription\setlength{\itemsep}{-0.5ex}}
+   
+% don't indent sections
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\input{section/introduction}
+\input{section/installation}
+\input{section/facerecognition}
+\input{section/implementation}
+\appendix
+%\input{section/appendix.tex}
+
+\bibliography{bib/facerec}
+\bibliographystyle{acm}
+
+\end{document}
+
+
