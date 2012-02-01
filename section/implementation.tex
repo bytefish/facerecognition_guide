@@ -3,17 +3,11 @@ The C++ API of OpenCV2 closely resembles the GNU Octave/MATLAB code we've writte
 
 \subsection{Downloading and Building the Source Code}
 
-Only a high-level description of the implementation is given, because pasting the complete code doesn't make any sense. I wanted to explain some implementation details, but I am afraid it would confuse people. The source code is available at \href{http://www.github.com/bytefish/opencv}{http://www.github.com/bytefish/opencv}:
+Only a high-level description of the implementation is given, because pasting the complete code doesn't make any sense. I wanted to explain some implementation details, but I am afraid it would confuse people. The source code is available at \url{http://www.github.com/bytefish/opencv}:
 
 \begin{itemize}
-	\item \textbf{Eigenfaces} (\url{https://github.com/bytefish/opencv/tree/master/eigenfaces})
-	\begin{itemize}
-		\item No additional dependencies needed.
-	\end{itemize}
-	\item \textbf{Fisherfaces} (\url{https://github.com/bytefish/opencv/tree/master/lda})
-	\begin{itemize}
-		 \item In order to compile this code you'll need \href{http://eigen.tuxfamily.org/}{Eigen3}, which is available from \url{http://eigen.tuxfamily.org}. OpenCV 2.3 already comes with \href{http://eigen.tuxfamily.org/}{Eigen3}, so there should be no additional dependencies. If it doesn't work for you download \href{http://eigen.tuxfamily.org/}{Eigen3}, extract it and add it to your include paths. It's a header-only library, so there's no need to compile it.
-	\end{itemize}
+	\item \textbf{Eigenfaces}: \url{https://github.com/bytefish/opencv/tree/master/eigenfaces}
+	\item \textbf{Fisherfaces}: \url{https://github.com/bytefish/opencv/tree/master/lda}
 \end{itemize}
 
 If you want to clone both projects with \href{http://git-scm.com/}{git} then issue:
@@ -25,21 +19,16 @@ git clone git@github.com:bytefish/opencv.git
 However, if you don't have \href{http://git-scm.com/}{git} on your system you can download both projects as zip or tarball:
 
 \begin{itemize}
-	\item \textbf{zip} https://github.com/bytefish/opencv/zipball/master	
-	\item \textbf{tar} https://github.com/bytefish/opencv/tarball/master
+	\item \textbf{zip} \url{https://github.com/bytefish/opencv/zipball/master}
+	\item \textbf{tar} \url{https://github.com/bytefish/opencv/tarball/master}
 \end{itemize}
 
-Building the demo executables is then as simple as (assuming you are in the project folder):
+Building the demo executables is then as simple as (assuming you are in a projects folder):
 \begin{lstlisting}
-# create build directory 
 mkdir build
-# ... and cd into
 cd build
-# generate platform-dependent makefiles
 cmake ..
-# build the project
 make
-# run the executable
 ./eigenfaces /path/to/csv.ext
 \end{lstlisting}
 
@@ -49,13 +38,16 @@ mkdir build
 cd build
 cmake -G "MinGW Makefiles" ..
 mingw32-make
+eigenfaces.exe /path/to/csv.ext
 \end{lstlisting}
+
+Please make sure to read the \textit{README.markdown} coming with each project!
 
 \subsection{Reading in the face images}
 
 \lstset{language=,}
 
-OpenCV can read data from various video sources and image types, start your research with the documentation on \href{http://opencv.willowgarage.com/documentation/cpp/reading_and_writing_images_and_video.html}{Reading and Writing Images and Video}. I needed to read images from different folders for a project and I don't know a simpler approach than reading from a CSV file (if you know a simpler approach, please ping me):
+OpenCV can read data from various video sources and image types, you can start your research with the documentation on \href{http://opencv.willowgarage.com/documentation/cpp/reading_and_writing_images_and_video.html}{Reading and Writing Images and Video}. I needed to read images from different folders for a project and I don't know a simpler approach than reading from a CSV file (if you know a simpler approach, please ping me):
 
 \begin{lstlisting}[language=c++]
 void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels) {
@@ -77,7 +69,7 @@ void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels) 
 }
 \end{lstlisting}
 
-Some people had questions about the usage of the demo, mainly concerned with reading the images and corresponding labels from the CSV file. Basically all the CSV file needs to contain are lines composed of a \textit{filename} followed by a \textit{;} followed by the \textit{label} (as integer number), making up a line like this: \lstinline|/path/to/image;0|. So if the AT\&T Facedatabase is extracted to \lstinline|/home/philipp/facerec/data/at| the CSV file has to look like this:
+Some people had questions about the usage of the executables, mainly concerned with reading the images and the corresponding labels from a CSV file. Basically all the CSV file needs to contain are lines composed of a \textit{filename} followed by a \textit{;} followed by the \textit{label} (as integer number), making up a line like this: \lstinline|/path/to/image;0|. So if the AT\&T Facedatabase is extracted to \lstinline|/home/philipp/facerec/data/at| the CSV file has to look like this:
 
 \begin{lstlisting}
 /home/philipp/facerec/data/at/s1/1.pgm;0
@@ -90,7 +82,7 @@ Some people had questions about the usage of the demo, mainly concerned with rea
 /home/philipp/facerec/data/at/s40/2.pgm;39
 \end{lstlisting}
 
-You don't need to take care about the ordering of the labels, just make sure each subject belongs to a unique label.\footnote{The CSV file for the AT\&T Database comes with this document.} I'll now show the definition of the classes and how to use them with an example, that should answer all questions. It's more important for me to show the code, so you know how to use it your own project.
+Think of the label as the subject (the person) you want to recognize. You don't need to take care about the order of the labels, just make sure the same subjects (persons) belong to the same (unique) label.\footnote{The CSV file for the AT\&T Database comes with this document.} I'll now show the definition of the classes and a source code listing, that shows how to use the classes. I think the code answers most of the questions already.
 
 \subsection{Eigenfaces}
 
@@ -146,7 +138,13 @@ int main(int argc, char *argv[]) {
   vector<int> labels;
   // read in images and labels
   string fn_csv = string("/path/to/your/csv.ext");
-  read_csv(fn_csv, images, labels);
+  // read in the images
+  try {
+    read_csv(fn_csv, images, labels);
+  } catch(exception& e) {
+    cerr << "Error opening file \"" << fn_csv << "\"." << endl;
+    exit(1);
+  }
   // get width and height of the samples
   int width = images[0].cols;
   int height = images[0].rows;
@@ -179,6 +177,7 @@ int main(int argc, char *argv[]) {
   // ...
 }
 \end{lstlisting}
+
 \subsection{Fisherfaces}
 
 \subsubsection{Definition}
@@ -235,7 +234,13 @@ int main(int argc, char *argv[]) {
   vector<int> labels;
   // read in images and labels
   string fn_csv = string("/path/to/your/csv.ext");
-  read_csv(fn_csv, images, labels);
+  // read in the images
+  try {
+    read_csv(fn_csv, images, labels);
+  } catch(exception& e) {
+    cerr << "Error opening file \"" << fn_csv << "\"." << endl;
+    exit(1);
+  }
   // get width and height
   int width = images[0].cols;
   int height = images[0].rows;
@@ -313,53 +318,50 @@ This example is the OpenCV C++ implementation of the tutorial at \url{http://byt
 //#include "subspace.hpp"
 
 int main(int argc, char *argv[]) {
-	// example taken from: http://www.bytefish.de/wiki/pca_lda_with_gnu_octave
-	double d[11][2] = {
-			{2, 3},
-			{3, 4},
-			{4, 5},
-			{5, 6},
-			{5, 7},
-			{2, 1},
-			{3, 2},
-			{4, 2},
-			{4, 3},
-			{6, 4},
-			{7, 6}};
-	int c[11] = {0,0,0,0,0,1,1,1,1,1,1};
-	// convert into OpenCV representation
-	Mat _data = Mat(11, 2, CV_64FC1, d).clone();
-	vector<int> _classes(c, c + sizeof(c) / sizeof(int));
-	// perform the lda
-	subspace::LinearDiscriminantAnalysis lda(_data, _classes);
-	// GNU Octave finds the following Eigenvalue:
-	//octave> d
-	//d =
-	//	 1.5195e+00
-	//
-	// Eigen finds the following Eigenvalue:
-	// [1.519536390756363]
-	//
-	// Since there's only 1 discriminant, this is correct.
-	cout << "Eigenvalues:" << endl << lda.eigenvalues() << endl;
-	// GNU Octave finds the following Eigenvectors:
-	//	octave:13> V(:,1)
-	//	V =
-	//
-	//	   0.71169  -0.96623
-	//	  -0.70249  -0.25766
-	//
-	// Eigen finds the following Eigenvector:
-	// [0.7116932742510111;
-	//  -0.702490343980524 ]
-	//
-	cout << "Eigenvectors:" << endl << lda.eigenvectors() << endl;
-	// project a data sample onto the subspace identified by LDA
-	Mat x = _data.row(0);
-	cout << "Projection of " << x << ": " << endl;
-	cout << lda.project(x) << endl;
+  // example taken from: http://www.bytefish.de/wiki/pca_lda_with_gnu_octave
+  double d[11][2] = {
+      {2, 3},
+      {3, 4},
+      {4, 5},
+      {5, 6},
+      {5, 7},
+      {2, 1},
+      {3, 2},
+      {4, 2},
+      {4, 3},
+      {6, 4},
+      {7, 6}};
+  int c[11] = {0,0,0,0,0,1,1,1,1,1,1};
+  // convert into OpenCV representation
+  Mat _data = Mat(11, 2, CV_64FC1, d).clone();
+  vector<int> _classes(c, c + sizeof(c) / sizeof(int));
+  // perform the lda
+  subspace::LinearDiscriminantAnalysis lda(_data, _classes);
+  // GNU Octave finds the following Eigenvalue:
+  //octave> d
+  //d =
+  //   1.5195e+00
+  //
+  // Eigen finds the following Eigenvalue:
+  // [1.519536390756363]
+  //
+  // Since there's only 1 discriminant, this is correct.
+  cout << "Eigenvalues:" << endl << lda.eigenvalues() << endl;
+  // GNU Octave finds the following Eigenvectors:
+  //  octave:13> V(:,1)
+  //  V =
+  //
+  //     0.71169  -0.96623
+  //    -0.70249  -0.25766
+  //
+  // Eigen finds the following Eigenvector:
+  // [0.7116932742510111;
+  //  -0.702490343980524 ]
+  //
+  cout << "Eigenvectors:" << endl << lda.eigenvectors() << endl;
+  // project a data sample onto the subspace identified by LDA
+  Mat x = _data.row(0);
+  cout << "Projection of " << x << ": " << endl;
+  cout << lda.project(x) << endl;
+}
 \end{lstlisting}
-
-
-
-

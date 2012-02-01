@@ -48,6 +48,14 @@ where $W = (v_{1}, v_{2}, \ldots, v_{k})$. The reconstruction from the PCA basis
 	x = W y + \mu
 \end{equation}
 
+The Eigenfaces method then performs face recognition by:
+
+\begin{enumerate}
+	\item Projecting all training samples into the PCA subspace (using Equation \ref{eqn:pca_projection}).
+	\item Projecting the query image into the PCA subspace (using Listing \ref{eqn:pca_reconstruction}).
+	\item Finding the nearest neighbor between the projected training images and the projected query image.
+\end{enumerate}
+
 Still there's one problem left to solve. Imagine we are given $400$ images sized $100 \times 100$ pixel. The Principal Component Analysis solves the covariance matrix $S = X X^{T}$, where ${size}(X) = 10000 \times 400$ in our example. You would end up with a $10000 \times 10000$ matrix, roughly $0.8 GB$. Solving this problem isn't feasible, so we'll need to apply a trick. From your linear algebra lessons you know that a $M \times N$ matrix with $M > N$ can only have $N - 1$ non-zero eigenvalues. So it's possible to take the eigenvalue decomposition $S = X^{T} X$ of size $N x N$ instead:
 \begin{equation}
 	X^{T} X v_{i} = \lambda_{i} v{i}
@@ -133,20 +141,19 @@ philipp@mango:~/facerec/data/at$ tree
 |   |-- ...
 \end{lstlisting}
 
-
-To list the files for a given path the function in Listing \ref{lst:listfiles} is used.
+First we'll need a function to list the files for a given path. This can be done with a function similar to Listing \ref{lst:listfiles}.
 
 \lstinputlisting[caption={\href{src/m/list\_files.m}{src/m/list\_files.m} \label{lst:listfiles}}, language=matlab]{src/m/list_files.m}
 
-Listing \ref{lst:readimages} then returns the images as row vectors, the corresponding class, width and height. Although we don't need the class index for the Eigenfaces, we'll need it for the Fisherfaces algorithm we are going to implement. This function is really basic and there's much to enhance (e.g. resize files if necessary, check the image extension, ...).
+Listing \ref{lst:readimages} uses Listing \ref{lst:listfiles} to read the images in each subfolder and to assign a unique label to each folder. The function returns the images as a data matrix, the corresponding classes and the width and height of the images (we'll need this in later code). This function is really basic and there's much to enhance (e.g. resize files if necessary, check the image extension, ...), but it does its job.
 
 \lstinputlisting[caption={\href{src/m/read\_images.m}{src/m/read\_images.m} \label{lst:readimages}}, language=matlab]{src/m/read_images.m}
 
-We want to plot some data, so we need a method to turn images into their grayscale representation. \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} expect image data as unsigned integer values, so we need to normalize the data first (Listing \ref{lst:normalize}):
+We want to plot some data, so we need a method to turn data into a representation  \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} understand. Both expect the image data as unsigned integer values, so we need a function to normalize the data first (Listing \ref{lst:normalize}):
 
 \lstinputlisting[caption={\href{src/m/normalize.m}{src/m/normalize.m} \label{lst:normalize}}, language=matlab]{src/m/normalize.m}
 
-Listing \ref{lst:toGrayscale} now turns the image into the expected representation:
+Listing \ref{lst:toGrayscale} then turns the image into the expected representation, by first normalizing the values to a range between $[0,255]$ and then casting the matrix to unsigned integer values.
 
 \lstinputlisting[caption={\href{src/m/toGrayscale.m}{src/m/toGrayscale.m} \label{lst:toGrayscale}}, language=matlab]{src/m/toGrayscale.m}
 
@@ -154,19 +161,19 @@ Translating the PCA from the algorithmic description of section \ref{ssection:pc
 
 \lstinputlisting[caption={\href{src/m/pca.m}{src/m/pca.m} \label{lst:pca}}, language=matlab]{src/m/pca.m}
 
-The observations are given by row, so the projection in equation \ref{eqn:pca_projection} needs to be rearranged a little:
+The observations are given by row, so the projection in Equation \ref{eqn:pca_projection} needs to be rearranged a little:
 
 \lstinputlisting[caption={\href{src/m/project.m}{src/m/project.m} \label{lst:project}}, language=matlab]{src/m/project.m}
 
-Same applies to the reconstruction in equation \ref{eqn:pca_reconstruction}: 
+The same applies to the reconstruction in Equation \ref{eqn:pca_reconstruction}: 
 
 \lstinputlisting[caption={\href{src/m/reconstruct.m}{src/m/reconstruct.m} \label{lst:reconstruct}}, language=matlab]{src/m/reconstruct.m}
 
-Now that everything is defined it's time for the fun stuff. After reading in the data with \lstinline|read_images| (Listing \ref{lst:readimages}), a full PCA is performed (Listing \ref{lst:pca}):
+Now that everything is defined it's time for the fun stuff. The face images are read with \lstinline|read_images| (Listing \ref{lst:readimages}) and then a full PCA (Listing \ref{lst:pca}) is performed:
 
 \lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca1}}, language=matlab, linerange={1-9}]{src/m/example_eigenfaces.m}
 
-Each principal component has the same length as an original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first 16 Eigenfaces:
+Each principal component has the same length as the original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first 16 Eigenfaces:
 
 \lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca2}}, language=matlab, linerange={10-19}]{src/m/example_eigenfaces.m}
 
@@ -176,20 +183,22 @@ I've used a colormap, so you can see how the grayscale values are distributed wi
 	\includegraphics[scale=0.6]{img/eigenfaces/pca_eigenfaces}
 \end{center}
 
-We've already seen in equation \ref{eqn:pca_reconstruction}, that we can reconstruct a face from its lower dimensional approximation. So let's see how many Eigenfaces are needed for a good reconstruction. I'll do a subplot with $10,30,\ldots,310$ Eigenfaces:
+We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconstruct a face from its lower dimensional approximation. So let's see how many Eigenfaces are needed for a good reconstruction. I'll do a subplot with $10,30,\ldots,310$ Eigenfaces:
 
 \lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca3}}, language=matlab, linerange={23-36}]{src/m/example_eigenfaces.m}
 
-10 Eigenvectors are obviously not sufficient for a good image reconstruction, 50 Eigenvectors may already be sufficient to encode important facial features. You'll get a good reconstruction with approximately 300 Eigenvectors for the AT\&T Facedatabase. There are some rule of thumbs how many Eigenfaces you should choose for a successful face recognition, but it heavily depends on the input data. \cite{zhao2003frl} is a good point to start researching for this.
+10 Eigenvectors are obviously not sufficient for a good image reconstruction, 50 Eigenvectors may already be sufficient to encode important facial features. You'll get a good reconstruction with approximately 300 Eigenvectors for the AT\&T Facedatabase. There are rule of thumbs how many Eigenfaces you should choose for a successful face recognition, but it heavily depends on the input data. \cite{zhao2003frl} is a good point to start researching for this.
 
 \begin{center}
 	\includegraphics[scale=0.6]{img/eigenfaces/pca_reconstruction}
 \end{center}
 
-
+The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
 
 \subsection{Fisherfaces}
+
 \label{ssection:fisherfaces}
+
 The Linear Discriminant Analysis was invented by the great statistician \href{http://en.wikipedia.org/wiki/Ronald_Fisher}{Sir R. A. Fisher}, who successfully used it for classifying flowers in his 1936 paper \textit{The use of multiple measurements in taxonomic problems} \cite{Fisher36}. But why do we need another dimensionality reduction method, if the Principal Component Analysis (PCA) did such a good job? 
 
 The PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represuccsent data, it doesn't consider any classes and so a lot of discriminative information may be lost when throwing components away. Imagine a situation where the variance is generated by an external source, let it be the light. The components identified by a PCA do not necessarily contain any discriminative information at all, so the projected samples are smeared together and a classification becomes impossible.
@@ -266,7 +275,6 @@ W = W_{fld}^{T} W_{pca}^{T}
 
 One final note: Although $S_{W}$ and $S_{B}$ are symmetric matrices, the product of two symmetric matrices is not necessarily symmetric. so you have to use an eigenvalue solver for general matrices. OpenCV's \href{http://opencv.willowgarage.com/documentation/cpp/operations_on_arrays.html#cv-eigen}{cv::eigen} only works for symmetric matrices in its current version; since eigenvalues and singular values aren't equivalent for non-symmetric matrices you can't use a Singular Value Decomposition (SVD) either.
 
-
 \subsubsection{Example}
 
 \label{ssection:example_fisherfaces}
@@ -275,24 +283,26 @@ Translating the Linear Discriminant Analysis to \href{http://www.gnu.org/softwar
 
 \lstinputlisting[caption={\href{src/m/lda.m}{src/m/lda.m} \label{lst:lda}}, language=matlab]{src/m/lda.m}
 
-The functions to perform a PCA (Listing \ref{lst:pca}) and LDA (Listing \ref{lst:lda} are now defined, so we can go ahead and implement the Fisherfaces from equation \ref{eqn:fisherfaces}. 
+The functions to perform a PCA (Listing \ref{lst:pca}) and LDA (Listing \ref{lst:lda}) are now defined, so we can go ahead and implement the Fisherfaces from Equation \ref{eqn:fisherfaces}. 
 
 \lstinputlisting[caption={\href{src/m/fisherfaces.m}{src/m/fisherfaces.m} \label{lst:fisherfaces}}, language=matlab]{src/m/fisherfaces.m}
 
-Just like with the Eigenfaces, each Fisherface has the same length as an original image, thus it can be displayed as an image. We'll again load the data, learn the Fisherfaces and make a subplot of the first 16 Fisherfaces.
+For this example I am going to use the Yale Facedatabase A, just because the plots are nicer. Each Fisherface has the same length as an original image, thus it can be displayed as an image. We'll again load the data, learn the Fisherfaces and make a subplot of the first 16 Fisherfaces.
 
-\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_fisherfaces}}, language=matlab, linerange={1-21}]{src/m/example_fisherfaces.m}
+\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_fisherfaces}}, language=matlab, linerange={1-23}]{src/m/example_fisherfaces.m}
 
-The Fisherfaces do not capture the illumination as obviously as the Eigenfaces. The performance of the Fisherfaces heavily depends on the input data. Practically said: if you learn the Fisherfaces on well-illuminated pictures only and try to recognize faces in bad-illuminated images, the method is likely to find the wrong components. This is somewhat logical, since the method had no chance to learn the illumination.
+The Fisherfaces method learns a class-specific transformation matrix, so the they do not capture illumination as obviously as the Eigenfaces method. The Discriminant Analysis instead finds the facial features to discriminate between the persons. It's important to mention, that the performance of the Fisherfaces heavily depends on the input data as well. Practically said: if you learn the Fisherfaces for well-illuminated pictures only and you try to recognize faces in bad-illuminated scenes, then method is likely to find the wrong components (just because those features may not be predominant on bad illuminated images). This is somewhat logical, since the method had no chance to learn the illumination.
 
 \begin{center}
 	\includegraphics[scale=0.6]{img/fisherfaces/fisherfaces_fisherfaces}
 \end{center}
 
-The Fisherfaces don't allow a reconstruction of the original images, since we only identified the features to distinguish between subjects. However, we can rewrite Listing \ref{lst:example_pca3} for the Fisherfaces into Listing \ref{lst:example_fisherfaces_reconstruction}.
+The Fisherfaces allow a reconstruction of the projected image, just like the Eigenfaces did. But since we only identified the features to distinguish between subjects, you can't expect a nice approximation of the original image. We can rewrite Listing \ref{lst:example_pca3} for the Fisherfaces method into Listing \ref{lst:example_fisherfaces_reconstruction}, but this time we'll project the sample image onto each of the Fisherfaces instead. So you'll have a visualization, which features each Fisherface describes.
 
-\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_reconstruction}}, language=matlab, linerange={25-38}]{src/m/example_fisherfaces.m}
+\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_reconstruction}}, language=matlab, linerange={28-40}]{src/m/example_fisherfaces.m}
 
 \begin{center}
 	\includegraphics[scale=0.6]{img/fisherfaces/fisherfaces_reconstruction}
 \end{center}
+
+The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.

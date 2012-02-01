@@ -1,7 +1,9 @@
 % load function files from subfolders aswell
 addpath (genpath ('.'));
+% for plotting
+db_name = 'Yale Facedatabase';
 % read images
-[X,y,w,h] = read_images('/home/philipp/facerec/data/at');
+[X,y,w,h] = read_images('/home/philipp/facerec/data/yalefaces_recognition');
 % n - number of samples
 % d - dimensionality
 [n,d] = size(X);
@@ -11,33 +13,33 @@ c = unique(y);
 [W,mu] = fisherfaces(X,y);
 % plot fisherfaces
 figure; hold on;
-title('Fisherfaces (AT&T Facedatabase)');
-for i=1:min(16,n)
-    subplot(4,4,i);
-    fisherface_i = toGrayscale(W(:,i), w, h);
-    imshow(fisherface_i);
-    colormap(jet(256));
-    title(sprintf('Fisherface #%i', i));
+title(sprintf('Fisherfaces %s', db_name));
+for i=1:min(16,length(c)-1)
+  subplot(4,4,i);
+  fisherface_i = toGrayscale(W(:,i), w, h);
+  imshow(fisherface_i);
+  colormap(jet(256));
+  title(sprintf('Fisherface #%i', i));
 end
 % print the plot
-%set (gca,'fontsize',20)
-%print('fisherfaces_fisherfaces.eps','-depsc','-F:20')
+set (gca,'fontsize',20)
+print('fisherfaces_fisherfaces.eps','-depsc','-F:20')
 % plot fisherfaces reconstruction
-steps = 1:3:min(50,length(c)-1);
+steps = 1:min(16,length(c)-1);
 Q = X(1,:); % first image to reconstruct
 figure; hold on;
-title('Reconstruction (AT&T Facedatabase)');
+title(sprintf('Fisherfaces Reconstruction %s', db_name));
 for i=1:min(16, length(steps))
-    subplot(4,4,i);
-    numEvs = steps(i);
-    P = project(W(:,1:numEvs), X(1,:), mu);
-    R = reconstruct(W(:,1:numEvs),P,mu);
-    comp = toGrayscale(R, w, h);
-    imshow(comp);
-    title(sprintf('%i Fisherfaces', numEvs));
+  subplot(4,4,i);
+  numEv = steps(i);
+  P = project(W(:,numEv), X(1,:), mu);
+  R = reconstruct(W(:,numEv),P,mu);
+  comp = toGrayscale(R, w, h);
+  imshow(comp);
+  title(sprintf('Fisherface #%i', numEv));
 end
 % print the plot
-%set (gca,'fontsize',20)
-%print('fisherfaces_reconstruction.eps','-depsc','-F:20')
+set (gca,'fontsize',20)
+print('fisherfaces_reconstruction.eps','-depsc','-F:20')
 
 pause;

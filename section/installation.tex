@@ -67,7 +67,7 @@ Usually CMake is good at guessing the parameters, but there are a lot more optio
 
 Better get a coffee, because OpenCV takes a while to compile! Once it is finished and you've decided to build dynamic libraries (assumed in this installation guide), you have to add the \lstinline|bin| path of the installation to Windows \lstinline|PATH| variable (e.g. \lstinline|C:/opencv/bin|). If you don't know how to do that, see \href{http://support.microsoft.com/kb/310519}{Microsoft Support: How To Manage Environment Variables in Windows XP} for details.
 
-\subsubsection*{Build in Linux}
+\subsubsection*{Build OpenCV in Linux}
 Creating the Makefiles in Linux is (almost) similar to Windows. Again choose a path you want to install OpenCV to (e.g. \lstinline|/usr/local|), preferrably it's not the source folder.
 
 \begin{lstlisting}[numberstyle=\footnotesize, numbers=left]
@@ -88,7 +88,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # project name
 PROJECT(hello_opencv)
 # you probably need to set this
-set(OpenCV_DIR /path/to/your/opencv/installation)
+SET(OpenCV_DIR /path/to/your/opencv/installation)
 # finds OpenCV
 FIND_PACKAGE(OpenCV REQUIRED)
 # build the executable from main.cpp
@@ -97,7 +97,7 @@ ADD_EXECUTABLE(hellocv main.cpp)
 TARGET_LINK_LIBRARIES(hellocv ${OpenCV_LIBS})
 \end{lstlisting}
 
-To build the project one would simply do (assuming we're in a folder with \lstinline|CMakeLists.txt|):
+To build the project one would simply do (assuming we're in the folder with \lstinline|CMakeLists.txt|):
 
 \lstset{
 	language=sh,
