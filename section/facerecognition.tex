@@ -141,59 +141,134 @@ philipp@mango:~/facerec/data/at$ tree
 |   |-- ...
 \end{lstlisting}
 
-First we'll need a function to list the files for a given path. This can be done with a function similar to Listing \ref{lst:listfiles}.
+\ifx\python\undefined
+	First we'll need a function to list the files for a given path. This can be done with a function similar to Listing \ref{lst:listfiles}.
+	
+	\lstinputlisting[caption={\href{src/m/list\_files.m}{src/m/list\_files.m} \label{lst:listfiles}}, language=matlab]{src/m/list_files.m}
+\fi
 
-\lstinputlisting[caption={\href{src/m/list\_files.m}{src/m/list\_files.m} \label{lst:listfiles}}, language=matlab]{src/m/list_files.m}
+The function in Listing \ref{lst:readimages} can be used to read in the images for each subfolder of a given directory. Each directory is given a unique (integer) label, you probably want to store the folder name as well. The function returns the images\ifx\python\undefined{} as a data matrix\fi{} and the corresponding classes\ifx\python\undefined, the width and height of the images (we'll need this in later code)\fi{}. This function is really basic and there's much to enhance, but it does its job.
 
-Listing \ref{lst:readimages} uses Listing \ref{lst:listfiles} to read the images in each subfolder and to assign a unique label to each folder. The function returns the images as a data matrix, the corresponding classes and the width and height of the images (we'll need this in later code). This function is really basic and there's much to enhance (e.g. resize files if necessary, check the image extension, ...), but it does its job.
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/read\_images.m}{src/m/read\_images.m} \label{lst:readimages}}, language=matlab]{src/m/read_images.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:readimages}}, language=python, linerange={1-3, 18-39}]{src/py/tinyfacerec/util.py}
+\fi
 
-\lstinputlisting[caption={\href{src/m/read\_images.m}{src/m/read\_images.m} \label{lst:readimages}}, language=matlab]{src/m/read_images.m}
+We want to plot some data, so we need a method to turn data into a representation \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://matplotlib.sourceforge.net/}{matplotlib} \fi understands. The image data is excepted as unsigned integer values in range $[0,255]$, so we need a function to normalize the data first (Listing \ref{lst:normalize}):
 
-We want to plot some data, so we need a method to turn data into a representation  \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} understand. Both expect the image data as unsigned integer values, so we need a function to normalize the data first (Listing \ref{lst:normalize}):
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/normalize.m}{src/m/normalize.m} \label{lst:normalize}}, language=matlab]{src/m/normalize.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:normalize}}, language=python, linerange={5-16}]{src/py/tinyfacerec/util.py}
+\fi
 
-\lstinputlisting[caption={\href{src/m/normalize.m}{src/m/normalize.m} \label{lst:normalize}}, language=matlab]{src/m/normalize.m}
+\ifx\python\undefined
+\else
+	We've already seen, that the Eigenfaces and Fisherfaces method expect a data matrix with observations by row (or column if you prefer it). Listing \ref{lst:matrices} defines two functions to reshape a list of multi-dimensional data into a data matrix. Note, that all samples are assumed to be of equal size.
 
-Listing \ref{lst:toGrayscale} then turns the image into the expected representation, by first normalizing the values to a range between $[0,255]$ and then casting the matrix to unsigned integer values.
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:matrices}}, language=python, linerange={41-55}]{src/py/tinyfacerec/util.py}
+\fi
 
-\lstinputlisting[caption={\href{src/m/toGrayscale.m}{src/m/toGrayscale.m} \label{lst:toGrayscale}}, language=matlab]{src/m/toGrayscale.m}
+\ifx\python\undefined
+	Listing \ref{lst:toGrayscale} then turns the image into the expected representation, by first normalizing the values to a range between $[0,255]$ and then casting the matrix to unsigned integer values.
+	
+	\lstinputlisting[caption={\href{src/m/toGrayscale.m}{src/m/toGrayscale.m} \label{lst:toGrayscale}}, language=matlab]{src/m/toGrayscale.m}
+\fi
 
-Translating the PCA from the algorithmic description of section \ref{ssection:pca_algorithm} to \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} is almost trivial. Don't copy and paste from this document, the source code is available in folder \lstinline|src/m|. Listing \ref{lst:pca} implements the Principal Component Analysis given by Equation \ref{eqn:pca_mean}, \ref{eqn:pca_cov} and \ref{eqn:pca_eigenvalues}. It also implements the inner-product PCA formulation, which occurs if there are more dimensions than samples. You can shorten this code, I just wanted to point out how it works.
+Translating the PCA from the algorithmic description of section \ref{ssection:pca_algorithm} to \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python} \fi is almost trivial. Don't copy and paste from this document, the source code is available in folder \ifx\python\undefined \href{src/m}{src/m} \else \href{src/py/tinyfacerec}{src/py/tinyfacerec} \fi. Listing \ref{lst:pca} implements the Principal Component Analysis given by Equation \ref{eqn:pca_mean}, \ref{eqn:pca_cov} and \ref{eqn:pca_eigenvalues}. It also implements the inner-product PCA formulation, which occurs if there are more dimensions than samples. You can shorten this code, I just wanted to point out how it works.
 
-\lstinputlisting[caption={\href{src/m/pca.m}{src/m/pca.m} \label{lst:pca}}, language=matlab]{src/m/pca.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/pca.m}{src/m/pca.m} \label{lst:pca}}, language=matlab]{src/m/pca.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/subspace.py}{src/py/tinyfacerec/subspace.py} \label{lst:pca}}, language=python, linerange={13-37}]{src/py/tinyfacerec/subspace.py}
+\fi
 
 The observations are given by row, so the projection in Equation \ref{eqn:pca_projection} needs to be rearranged a little:
-
-\lstinputlisting[caption={\href{src/m/project.m}{src/m/project.m} \label{lst:project}}, language=matlab]{src/m/project.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/project.m}{src/m/project.m} \label{lst:project}}, language=matlab]{src/m/project.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/subspace.py}{src/py/tinyfacerec/subspace.py} \label{lst:project}}, language=python, linerange={3-6}]{src/py/tinyfacerec/subspace.py}
+\fi
 
 The same applies to the reconstruction in Equation \ref{eqn:pca_reconstruction}: 
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/reconstruct.m}{src/m/reconstruct.m} \label{lst:reconstruct}}, language=matlab]{src/m/reconstruct.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/subspace.py}{src/py/tinyfacerec/subspace.py} \label{lst:reconstruct}}, language=python, linerange={8-11}]{src/py/tinyfacerec/subspace.py}
+\fi
 
-\lstinputlisting[caption={\href{src/m/reconstruct.m}{src/m/reconstruct.m} \label{lst:reconstruct}}, language=matlab]{src/m/reconstruct.m}
+Now that everything is defined it's time for the fun stuff. The face images are read with Listing \ref{lst:readimages} and then a full PCA (see Listing \ref{lst:pca}) is performed. \ifx\python\ifx\python\undefined \else I'll use the great \href{http://matplotlib.sourceforge.net/}{matplotlib} library for plotting in \href{http://www.python.org}{Python}, please install it if you haven't done already.\fi
 
-Now that everything is defined it's time for the fun stuff. The face images are read with \lstinline|read_images| (Listing \ref{lst:readimages}) and then a full PCA (Listing \ref{lst:pca}) is performed:
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca1}}, language=matlab, linerange={1-9}]{src/m/example_eigenfaces.m}
+\else
+	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca1}}, language=python, linerange={1-14}]{src/py/scripts/example_pca.py}
+\fi
 
-\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca1}}, language=matlab, linerange={1-9}]{src/m/example_eigenfaces.m}
+That's it already. Pretty easy, no? Each principal component has the same length as the original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first at most 16 Eigenfaces. \ifx\python\undefined \else In Python a \lstinline|subplot| method is defined (see \url{src/py/tinyfacerec/visual.py}) in order to simplify the process. It gets a list of images, the title and some other options.\fi
 
-Each principal component has the same length as the original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first 16 Eigenfaces:
-
-\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca2}}, language=matlab, linerange={10-19}]{src/m/example_eigenfaces.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca2}}, language=matlab, linerange={10-19}]{src/m/example_eigenfaces.m}
+\else
+	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca2}}, language=python, linerange={16-25}]{src/py/scripts/example_pca.py}
+\fi
 
 I've used a colormap, so you can see how the grayscale values are distributed within the specific Eigenfaces. You can see, that the Eigenfaces do not only encode facial features, but also the illumination in the images (see the left light in Eigenface \#4, right light in Eigenfaces \#5):
 
+\ifx\python\undefined
 \begin{center}
-	\includegraphics[scale=0.6]{img/eigenfaces/pca_eigenfaces}
+	\includegraphics[scale=0.6]{img/eigenfaces/octave_pca_eigenfaces}
 \end{center}
+\else
+	\begin{center}
+		\includegraphics[scale=0.6]{img/eigenfaces/python_pca_eigenfaces}
+	\end{center}
+\fi
 
 We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconstruct a face from its lower dimensional approximation. So let's see how many Eigenfaces are needed for a good reconstruction. I'll do a subplot with $10,30,\ldots,310$ Eigenfaces:
 
-\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca3}}, language=matlab, linerange={23-36}]{src/m/example_eigenfaces.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca3}}, language=matlab, linerange={23-36}]{src/m/example_eigenfaces.m}
+\else
+	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca3}}, language=python, linerange={27-40}]{src/py/scripts/example_pca.py}
+\fi
 
 10 Eigenvectors are obviously not sufficient for a good image reconstruction, 50 Eigenvectors may already be sufficient to encode important facial features. You'll get a good reconstruction with approximately 300 Eigenvectors for the AT\&T Facedatabase. There are rule of thumbs how many Eigenfaces you should choose for a successful face recognition, but it heavily depends on the input data. \cite{zhao2003frl} is a good point to start researching for this.
 
-\begin{center}
-	\includegraphics[scale=0.6]{img/eigenfaces/pca_reconstruction}
-\end{center}
+\ifx\python\undefined
+	\begin{center}
+		\includegraphics[scale=0.6]{img/eigenfaces/octave_pca_reconstruction}
+	\end{center}
+\else
+	\begin{center}
+		\includegraphics[scale=0.6]{img/eigenfaces/python_pca_reconstruction}
+	\end{center}
+\fi
 
-The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
+\ifx\python\undefined
+	The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
+\else
+	\subsubsection{The Eigenfaces Method in Python}
+	Now we have got everything to implement the Eigenfaces method. \href{http://www.python.org}{Python} is an object oriented programming language, so is our Eigenfaces model. Let's recap... The Eigenfaces method is basically a Pricipal Component Analysis with a Nearest Neighbor model. Some publications report about the influence of the distance metric, so various distance metrics for the Nearest Neighbor search should be supported. It's easy, let's get it done. 
+	
+	Listing \ref{lst:distance_base} defines \lstinline|AbstractDistance| as the abstract base class for each distance metric. Every subclass must override the call operator \lstinline|__call__|, as shown for the Euclidean Distance and the Negated Cosine Distance. If you search for more distance metrics, please have a look \url{https://www.github.com/bytefish/facerec}.
+	
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/distance.py}{src/py/tinyfacerec/distance.py} \label{lst:distance_base}}, language=python]{src/py/tinyfacerec/distance.py}
+	
+	The Eigenfaces and Fisherfaces method both share common methods, so we'll define a base prediction model in Listing \ref{lst:eigenfaces_base_model}. I don't want to do a full k-Nearest Neighbor implementation here, because (1) the number of neighbors doesn't really matter for both methods and (2) it would confuse people. If you are implementing it in a language of your choice, you should really separate the feature extraction from the classification, a real generic approach is given in my \href{https://www.github.com/bytefish/facerec}{facerec} framework. However, feel free to extend these classes for your needs.
+	
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_base_model}}, language=python, linerange={1-28}]{src/py/tinyfacerec/model.py}
+
+	Listing \ref{lst:eigenfaces_eigenfaces_model} then subclasses the \lstinline|EigenfacesModel| from the \lstinline|BaseModel|. Only the \lstinline|compute| method needs to be overriden with our specific feature extraction.
+	
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_eigenfaces_model}}, language=python, linerange={30-41}]{src/py/tinyfacerec/model.py}
+	
+		Once the \lstinline|EigenfacesModel| is defined, it can be used to learn the Fisherfaces and generate predictions. In the following Listing \ref{lst:example_model_eigenfaces} we'll load the Yale Facedatabase A and perform a prediction on the first image.
+		
+	\lstinputlisting[caption={\href{src/py/scripts/example\_model\_eigenfaces.py}{src/py/scripts/example\_model\_eigenfaces.py} \label{lst:example_model_eigenfaces}}, language=python]{src/py/scripts/example_model_eigenfaces.py}
+
+\fi
 
 \subsection{Fisherfaces}
 
@@ -279,30 +354,72 @@ One final note: Although $S_{W}$ and $S_{B}$ are symmetric matrices, the product
 
 \label{ssection:example_fisherfaces}
 
-Translating the Linear Discriminant Analysis to \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} is almost trivial again, see Listing \ref{lst:lda}. For projecting and reconstructing from the basis you can use the functions from Listing \ref{lst:project} and \ref{lst:reconstruct}.
-
-\lstinputlisting[caption={\href{src/m/lda.m}{src/m/lda.m} \label{lst:lda}}, language=matlab]{src/m/lda.m}
+Translating the Linear Discriminant Analysis to \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python}\fi is almost trivial again, see Listing \ref{lst:lda}. For projecting and reconstructing from the basis you can use the functions from Listing \ref{lst:project} and \ref{lst:reconstruct}.
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/lda.m}{src/m/lda.m} \label{lst:lda}}, language=matlab]{src/m/lda.m}
+\else
+		\lstinputlisting[caption={\href{src/py/tinyfacerec/subspace.py}{src/py/tinyfacerec/subspace.py} \label{lst:lda}}, language=python, linerange={39-58}]{src/py/tinyfacerec/subspace.py}
+\fi
 
 The functions to perform a PCA (Listing \ref{lst:pca}) and LDA (Listing \ref{lst:lda}) are now defined, so we can go ahead and implement the Fisherfaces from Equation \ref{eqn:fisherfaces}. 
 
-\lstinputlisting[caption={\href{src/m/fisherfaces.m}{src/m/fisherfaces.m} \label{lst:fisherfaces}}, language=matlab]{src/m/fisherfaces.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/fisherfaces.m}{src/m/fisherfaces.m} \label{lst:fisherfaces}}, language=matlab]{src/m/fisherfaces.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/subspace.py}{src/py/tinyfacerec/subspace.py} \label{lst:fisherfaces}}, language=python, linerange={60-67}]{src/py/tinyfacerec/subspace.py}
+\fi
 
 For this example I am going to use the Yale Facedatabase A, just because the plots are nicer. Each Fisherface has the same length as an original image, thus it can be displayed as an image. We'll again load the data, learn the Fisherfaces and make a subplot of the first 16 Fisherfaces.
 
-\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_fisherfaces}}, language=matlab, linerange={1-23}]{src/m/example_fisherfaces.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_fisherfaces}}, language=matlab, linerange={1-23}]{src/m/example_fisherfaces.m}
+\else
+	\lstinputlisting[caption={\href{src/py/scripts/example\_fisherfaces.py}{src/py/scripts/example\_fisherfaces.py} \label{lst:example_fisherfaces_fisherfaces}}, language=python, linerange={1-23}]{src/py/scripts/example_fisherfaces.py}
+\fi
 
 The Fisherfaces method learns a class-specific transformation matrix, so the they do not capture illumination as obviously as the Eigenfaces method. The Discriminant Analysis instead finds the facial features to discriminate between the persons. It's important to mention, that the performance of the Fisherfaces heavily depends on the input data as well. Practically said: if you learn the Fisherfaces for well-illuminated pictures only and you try to recognize faces in bad-illuminated scenes, then method is likely to find the wrong components (just because those features may not be predominant on bad illuminated images). This is somewhat logical, since the method had no chance to learn the illumination.
 
-\begin{center}
-	\includegraphics[scale=0.6]{img/fisherfaces/fisherfaces_fisherfaces}
-\end{center}
+\ifx\python\undefined
+	\begin{center}
+		\includegraphics[scale=0.6]{img/fisherfaces/octave_fisherfaces_fisherfaces}
+	\end{center}
+\else
+	\begin{center}
+		\includegraphics[scale=0.6]{img/fisherfaces/python_fisherfaces_fisherfaces}
+	\end{center}
+\fi
 
 The Fisherfaces allow a reconstruction of the projected image, just like the Eigenfaces did. But since we only identified the features to distinguish between subjects, you can't expect a nice approximation of the original image. We can rewrite Listing \ref{lst:example_pca3} for the Fisherfaces method into Listing \ref{lst:example_fisherfaces_reconstruction}, but this time we'll project the sample image onto each of the Fisherfaces instead. So you'll have a visualization, which features each Fisherface describes.
 
-\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_reconstruction}}, language=matlab, linerange={28-40}]{src/m/example_fisherfaces.m}
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_reconstruction}}, language=matlab, linerange={28-40}]{src/m/example_fisherfaces.m}
+\else
+	\lstinputlisting[caption={\href{src/py/scripts/example\_fisherfaces.py}{src/py/scripts/example\_fisherfaces.py} \label{lst:example_fisherfaces_reconstruction}}, language=python, linerange={25-36}]{src/py/scripts/example_fisherfaces.py}
+\fi
 
-\begin{center}
-	\includegraphics[scale=0.6]{img/fisherfaces/fisherfaces_reconstruction}
-\end{center}
 
-The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
+\ifx\python\undefined
+	\begin{center}
+		\includegraphics[scale=0.6]{img/fisherfaces/octave_fisherfaces_reconstruction}
+	\end{center}
+\else
+	\begin{center}
+		\includegraphics[scale=0.6]{img/fisherfaces/python_fisherfaces_reconstruction}
+	\end{center}
+\fi
+
+\ifx\python\undefined
+	The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
+\else
+	\subsubsection{The Fisherfaces Method in Python}
+	The implementation details are not repeated in this section. For the Fisherfaces method a similar model to the \lstinline|EigenfacesModel| in Listing \ref{lst:eigenfaces_eigenfaces_model} must be defined.
+		
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_eigenfaces_model}}, language=python, linerange={43-54}]{src/py/tinyfacerec/model.py}
+	
+		Once the \lstinline|FisherfacesModel| is defined, it can be used to learn the Fisherfaces and generate predictions. In the following Listing \ref{lst:example_model_fisherfaces} we'll load the Yale Facedatabase A and perform a prediction on the first image.
+		
+	\lstinputlisting[caption={\href{src/py/scripts/example\_model\_fisherfaces.py}{src/py/scripts/example\_model\_fisherfaces.py} \label{lst:example_model_fisherfaces}}, language=python]{src/py/scripts/example_model_fisherfaces.py}
+
+\fi
+
+

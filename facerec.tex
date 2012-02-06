@@ -1,11 +1,12 @@
 \documentclass[10pt]{article}
 
+\input{definitions}
+
 \usepackage[utf8]{inputenc}
 
 \usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{amssymb}
-% rand
 \usepackage{geometry}
 \geometry{a4paper, top=25mm, left=30mm, right=25mm, bottom=30mm,
          headsep=10mm, footskip=12mm}
@@ -15,24 +16,18 @@
 
 \usepackage{graphicx}
 \usepackage[pdftex,colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
-
-
 \usepackage{color}
 \usepackage{xcolor}
-
 \usepackage{tabularx}
-
 \usepackage{listings}
-
+\usepackage{parcolumns}
 \usepackage{longtable}
-
 \usepackage[margin=10pt]{caption}
 
-% Der Titel
+% set the title
 \title{\begin{tabular}{p{11cm}}\centering
 Face Recognition with OpenCV2
 \end{tabular}}
-
 
 % contact details
 \author{Philipp Wagner\\\href{http://www.bytefish.de}{http://www.bytefish.de}}
@@ -64,6 +59,7 @@ Face Recognition with OpenCV2
 	showspaces=false,
 	showstringspaces=false,
 	showtabs=false,
+	tabsize=2,
 }
 
 \lstloadlanguages{C++}

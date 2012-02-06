@@ -22,8 +22,8 @@ for i=1:min(16,length(c)-1)
   title(sprintf('Fisherface #%i', i));
 end
 % print the plot
-set (gca,'fontsize',20)
-print('fisherfaces_fisherfaces.eps','-depsc','-F:20')
+%set (gca,'fontsize',20)
+%print('fisherfaces_fisherfaces.eps','-depsc','-F:20')
 % plot fisherfaces reconstruction
 steps = 1:min(16,length(c)-1);
 Q = X(1,:); % first image to reconstruct
@@ -39,7 +39,7 @@ for i=1:min(16, length(steps))
   title(sprintf('Fisherface #%i', numEv));
 end
 % print the plot
-set (gca,'fontsize',20)
-print('fisherfaces_reconstruction.eps','-depsc','-F:20')
+%set (gca,'fontsize',20)
+%print('fisherfaces_reconstruction.eps','-depsc','-F:20')
 
 pause;
