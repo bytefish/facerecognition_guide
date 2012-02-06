@@ -69,11 +69,16 @@ and get the original eigenvectors of $S = X X^{T}$ with a left multiplication of
 
 The resulting eigenvectors are orthogonal, to get orthonormal eigenvectors they need to be normalized to unit length. I don't want to turn this into a publication, so please look into \cite{Duda2001} for the derivation and proof of the equations.
 
-\subsubsection{Example}
+\ifx\python\undefined 
+	\subsubsection{Eigenfaces in GNU Octave/MATLAB}
+\else
+ \subsubsection{Eigenfaces in Python}
+\fi
+
 
 \label{ssection:example_eigenfaces}
 
-It's always useful to prototype algorithms before implementing them with OpenCV, because this gives you an idea what the solution looks like. I use \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} in this document, although I recently switched to \href{http://www.python.org}{Python} with \href{http://www.scipy.org}{NumPy} and \href{http://matplotlib.sourceforge.net/}{matplotlib}. OpenCV2 uses \href{http://www.scipy.org}{NumPy} arrays since OpenCV 2.3, so all algorithms using \href{http://www.scipy.org}{NumPy} play fine with OpenCV's Python bindings. A full-blown \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} and Python environment is available at \url{https://github.com/bytefish/facerec}, including:
+It's always useful to prototype algorithms before implementing them with OpenCV, because this gives you an idea what the solution looks like. I've used \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} and \href{http://www.python.org}{Python} with \href{http://www.scipy.org}{NumPy} (and \href{http://matplotlib.sourceforge.net/}{matplotlib}) in this document. Please compile the document version you prefer. I recently switched to Python, because OpenCV2 uses \href{http://www.scipy.org}{NumPy} arrays since OpenCV 2.3. This means: all algorithms using \href{http://www.numpy.org}{NumPy} play fine with OpenCV's Python bindings, that's great news! Full-blown \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} and Python environments are available at \url{https://github.com/bytefish/facerec}, including:
 \begin{itemize}
 	\item Preprocessing 
 	\begin{itemize}
@@ -100,7 +105,7 @@ It's always useful to prototype algorithms before implementing them with OpenCV,
 	\end{itemize}
 \end{itemize}
 
-I don't want to do a toy example here. We are doing face recognition, so you'll need some face images. You can either create your own database or start with one of the available databases, \href{http://face-rec.org/databases/}{face-rec.org/databases} gives an up-to-date overview. Three interesting databases are\footnote{Parts of the description are quoted from \href{http://face-rec.org}{face-rec.org}.}:
+We'll only implement important algorithms, still I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own database or start with one of the available databases, \href{http://face-rec.org/databases/}{face-rec.org/databases} gives an up-to-date overview. Three interesting databases are\footnote{Parts of the description are quoted from \href{http://face-rec.org}{face-rec.org}.}:
 
 \begin{description}
 
@@ -114,31 +119,25 @@ I don't want to do a toy example here. We are doing face recognition, so you'll 
 
 \end{description}
 
-The face images need to be stored in a folder hierachy similar to \lstinline|<datbase name>/<subject name>/<filename>.<ext>|. The \href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase} already comes in such a hierarchy:
+The face images need to be stored in a folder hierachy similar to \lstinline|<datbase name>/<subject name>/<filename>.<ext>|. The \href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase} for example comes in such a hierarchy, see Listing \ref{lst:att}.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={\label{lst:att}}, language=,]
 philipp@mango:~/facerec/data/at$ tree
 .
 |-- README
 |-- s1
-|   |-- 10.pgm
 |   |-- 1.pgm
-|   |-- 2.pgm
-|   |-- 3.pgm
 |   |-- ...
+|   |-- 10.pgm
 |-- s2
-|   |-- 10.pgm
 |   |-- 1.pgm
-|   |-- 2.pgm
-|   |-- 3.pgm
 |   |-- ...
+|   |-- 10.pgm
 ...
 |-- s40
-|   |-- 10.pgm
 |   |-- 1.pgm
-|   |-- 2.pgm
-|   |-- 3.pgm
 |   |-- ...
+|   |-- 10.pgm
 \end{lstlisting}
 
 \ifx\python\undefined
@@ -176,7 +175,7 @@ We want to plot some data, so we need a method to turn data into a representatio
 	\lstinputlisting[caption={\href{src/m/toGrayscale.m}{src/m/toGrayscale.m} \label{lst:toGrayscale}}, language=matlab]{src/m/toGrayscale.m}
 \fi
 
-Translating the PCA from the algorithmic description of section \ref{ssection:pca_algorithm} to \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python} \fi is almost trivial. Don't copy and paste from this document, the source code is available in folder \ifx\python\undefined \href{src/m}{src/m} \else \href{src/py/tinyfacerec}{src/py/tinyfacerec} \fi. Listing \ref{lst:pca} implements the Principal Component Analysis given by Equation \ref{eqn:pca_mean}, \ref{eqn:pca_cov} and \ref{eqn:pca_eigenvalues}. It also implements the inner-product PCA formulation, which occurs if there are more dimensions than samples. You can shorten this code, I just wanted to point out how it works.
+Translating the PCA from the algorithmic description of section \ref{ssection:pca_algorithm} to \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python} \fi is almost trivial. Don't copy and paste from this document, the source code is available in folder \ifx\python\undefined \lstinline|src/m|\else \lstinline|src/py/tinyfacerec|\fi. Listing \ref{lst:pca} implements the Principal Component Analysis given by Equation \ref{eqn:pca_mean}, \ref{eqn:pca_cov} and \ref{eqn:pca_eigenvalues}. It also implements the inner-product PCA formulation, which occurs if there are more dimensions than samples. You can shorten this code, I just wanted to point out how it works.
 
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/pca.m}{src/m/pca.m} \label{lst:pca}}, language=matlab]{src/m/pca.m}
@@ -185,6 +184,7 @@ Translating the PCA from the algorithmic description of section \ref{ssection:pc
 \fi
 
 The observations are given by row, so the projection in Equation \ref{eqn:pca_projection} needs to be rearranged a little:
+
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/project.m}{src/m/project.m} \label{lst:project}}, language=matlab]{src/m/project.m}
 \else
@@ -192,6 +192,7 @@ The observations are given by row, so the projection in Equation \ref{eqn:pca_pr
 \fi
 
 The same applies to the reconstruction in Equation \ref{eqn:pca_reconstruction}: 
+
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/reconstruct.m}{src/m/reconstruct.m} \label{lst:reconstruct}}, language=matlab]{src/m/reconstruct.m}
 \else
@@ -206,7 +207,7 @@ Now that everything is defined it's time for the fun stuff. The face images are 
 	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca1}}, language=python, linerange={1-14}]{src/py/scripts/example_pca.py}
 \fi
 
-That's it already. Pretty easy, no? Each principal component has the same length as the original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first at most 16 Eigenfaces. \ifx\python\undefined \else In Python a \lstinline|subplot| method is defined (see \url{src/py/tinyfacerec/visual.py}) in order to simplify the process. It gets a list of images, the title and some other options.\fi
+That's it already. Pretty easy, no? Each principal component has the same length as the original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first (at most) 16 Eigenfaces. \ifx\python\undefined \else In Python a \lstinline|subplot| method needs to be defined (see \url{src/py/tinyfacerec/visual.py}) to simplify the plotting. The method plots a list data, sets the title and color scale of the images.\fi
 
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca2}}, language=matlab, linerange={10-19}]{src/m/example_eigenfaces.m}
@@ -214,7 +215,7 @@ That's it already. Pretty easy, no? Each principal component has the same length
 	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca2}}, language=python, linerange={16-25}]{src/py/scripts/example_pca.py}
 \fi
 
-I've used a colormap, so you can see how the grayscale values are distributed within the specific Eigenfaces. You can see, that the Eigenfaces do not only encode facial features, but also the illumination in the images (see the left light in Eigenface \#4, right light in Eigenfaces \#5):
+I've used the jet colormap, so you can see how the grayscale values are distributed within the specific Eigenfaces. You can see, that the Eigenfaces do not only encode facial features, but also the illumination in the images (see the left light in Eigenface \#4, right light in Eigenfaces \#5):
 
 \ifx\python\undefined
 \begin{center}
@@ -234,7 +235,7 @@ We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconst
 	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca3}}, language=python, linerange={27-40}]{src/py/scripts/example_pca.py}
 \fi
 
-10 Eigenvectors are obviously not sufficient for a good image reconstruction, 50 Eigenvectors may already be sufficient to encode important facial features. You'll get a good reconstruction with approximately 300 Eigenvectors for the AT\&T Facedatabase. There are rule of thumbs how many Eigenfaces you should choose for a successful face recognition, but it heavily depends on the input data. \cite{zhao2003frl} is a good point to start researching for this.
+10 Eigenvectors are obviously not sufficient for a good image reconstruction, 50 Eigenvectors may already be sufficient to encode important facial features. You'll get a good reconstruction with approximately 300 Eigenvectors for the AT\&T Facedatabase. There are rule of thumbs how many Eigenfaces you should choose for a successful face recognition, but it heavily depends on the input data. \cite{zhao2003frl} is the perfect point to start researching for this.
 
 \ifx\python\undefined
 	\begin{center}
@@ -249,22 +250,19 @@ We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconst
 \ifx\python\undefined
 	The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
 \else
-	\subsubsection{The Eigenfaces Method in Python}
-	Now we have got everything to implement the Eigenfaces method. \href{http://www.python.org}{Python} is an object oriented programming language, so is our Eigenfaces model. Let's recap... The Eigenfaces method is basically a Pricipal Component Analysis with a Nearest Neighbor model. Some publications report about the influence of the distance metric, so various distance metrics for the Nearest Neighbor search should be supported. It's easy, let's get it done. 
-	
-	Listing \ref{lst:distance_base} defines \lstinline|AbstractDistance| as the abstract base class for each distance metric. Every subclass must override the call operator \lstinline|__call__|, as shown for the Euclidean Distance and the Negated Cosine Distance. If you search for more distance metrics, please have a look \url{https://www.github.com/bytefish/facerec}.
+	Now we have got everything to implement the Eigenfaces method. \href{http://www.python.org}{Python} is object oriented and so is our Eigenfaces model. Let's recap: The Eigenfaces method is basically a Pricipal Component Analysis with a Nearest Neighbor model. Some publications report about the influence of the distance metric (I can't support these claims with my research), so various distance metrics for the Nearest Neighbor should be supported. Listing \ref{lst:distance_base} defines an \lstinline|AbstractDistance| as the abstract base class for each distance metric. Every subclass overrides the call operator \lstinline|__call__| as shown for the Euclidean Distance and the Negated Cosine Distance. If you need more distance metrics, please have a look at the distance metrics implemented in \url{https://www.github.com/bytefish/facerec}.
 	
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/distance.py}{src/py/tinyfacerec/distance.py} \label{lst:distance_base}}, language=python]{src/py/tinyfacerec/distance.py}
 	
-	The Eigenfaces and Fisherfaces method both share common methods, so we'll define a base prediction model in Listing \ref{lst:eigenfaces_base_model}. I don't want to do a full k-Nearest Neighbor implementation here, because (1) the number of neighbors doesn't really matter for both methods and (2) it would confuse people. If you are implementing it in a language of your choice, you should really separate the feature extraction from the classification, a real generic approach is given in my \href{https://www.github.com/bytefish/facerec}{facerec} framework. However, feel free to extend these classes for your needs.
+	The Eigenfaces and Fisherfaces method both share common methods, so we'll define a base prediction model in Listing \ref{lst:eigenfaces_base_model}. I don't want to do a full k-Nearest Neighbor implementation here, because (1) the number of neighbors doesn't really matter for both methods and (2) it would confuse people. If you are implementing it in a language of your choice, you should really separate the feature extraction and classification from the model itself. A real generic approach is given in my \href{https://www.github.com/bytefish/facerec}{facerec} framework. However, feel free to extend these basic classes for your needs.
 	
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_base_model}}, language=python, linerange={1-28}]{src/py/tinyfacerec/model.py}
 
-	Listing \ref{lst:eigenfaces_eigenfaces_model} then subclasses the \lstinline|EigenfacesModel| from the \lstinline|BaseModel|. Only the \lstinline|compute| method needs to be overriden with our specific feature extraction.
+	Listing \ref{lst:eigenfaces_eigenfaces_model} then subclasses the \lstinline|EigenfacesModel| from the \lstinline|BaseModel|, so only the \lstinline|compute| method needs to be overriden with our specific feature extraction. The prediction is a 1-Nearest Neighbor search with a distance metric. 
 	
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_eigenfaces_model}}, language=python, linerange={30-41}]{src/py/tinyfacerec/model.py}
 	
-		Once the \lstinline|EigenfacesModel| is defined, it can be used to learn the Fisherfaces and generate predictions. In the following Listing \ref{lst:example_model_eigenfaces} we'll load the Yale Facedatabase A and perform a prediction on the first image.
+		Now that the \lstinline|EigenfacesModel| is defined, it can be used to learn the Fisherfaces and generate predictions. In the following Listing \ref{lst:example_model_eigenfaces} we'll load the Yale Facedatabase A and perform a prediction on the first image.
 		
 	\lstinputlisting[caption={\href{src/py/scripts/example\_model\_eigenfaces.py}{src/py/scripts/example\_model\_eigenfaces.py} \label{lst:example_model_eigenfaces}}, language=python]{src/py/scripts/example_model_eigenfaces.py}
 
@@ -350,7 +348,11 @@ W = W_{fld}^{T} W_{pca}^{T}
 
 One final note: Although $S_{W}$ and $S_{B}$ are symmetric matrices, the product of two symmetric matrices is not necessarily symmetric. so you have to use an eigenvalue solver for general matrices. OpenCV's \href{http://opencv.willowgarage.com/documentation/cpp/operations_on_arrays.html#cv-eigen}{cv::eigen} only works for symmetric matrices in its current version; since eigenvalues and singular values aren't equivalent for non-symmetric matrices you can't use a Singular Value Decomposition (SVD) either.
 
-\subsubsection{Example}
+\ifx\python\undefined 
+	\subsubsection{Fisherfaces in GNU Octave/MATLAB}
+\else
+ \subsubsection{Fisherfaces in Python}
+\fi
 
 \label{ssection:example_fisherfaces}
 
@@ -411,7 +413,6 @@ The Fisherfaces allow a reconstruction of the projected image, just like the Eig
 \ifx\python\undefined
 	The k-Nearest Neighbor matching is left out for this example. Please see the GNU Octave/MATLAB code at \url{https://github.com/bytefish/facerec/tree/master/m} to see how it is implemented, it's all there.
 \else
-	\subsubsection{The Fisherfaces Method in Python}
 	The implementation details are not repeated in this section. For the Fisherfaces method a similar model to the \lstinline|EigenfacesModel| in Listing \ref{lst:eigenfaces_eigenfaces_model} must be defined.
 		
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_eigenfaces_model}}, language=python, linerange={43-54}]{src/py/tinyfacerec/model.py}
