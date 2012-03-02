@@ -1,9 +1,10 @@
 \section{Face Recognition with OpenCV2 C++ API}
-The C++ API of OpenCV2 closely resembles the GNU Octave/MATLAB code we've written in section \ref{ssection:example_eigenfaces} and \ref{ssection:example_fisherfaces}. If you know how to implement it in MATLAB, you won't have a great problem translating it to OpenCV2. I personally think you don't need a book to learn about the OpenCV2 C++ API. There's a lot of documentation coming with OpenCV, just have a look into the \lstinline|doc| folder of your OpenCV installation. The easiest way to get started is the \textit{OpenCV Cheat Sheet (C++)} (\lstinline|opencv_cheatsheet.pdf|), because it shows you how to use all the functions with examples. The \textit{The OpenCV Reference Manual} (\lstinline|opencv2refman.pdf|) is the definite guide to the API (500+ pages). Of course, you'll need a book or other literature for understanding computer vision algorithms - I can't give an introduction to this here.
+
+The C++ API of OpenCV2 closely resembles the \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python} \fi code we've written in section \ref{ssection:example_eigenfaces} and \ref{ssection:example_fisherfaces}. If you have prototyped it, you won't have a great problem translating it to OpenCV2. I personally think you don't need a book to learn about the OpenCV2 C++ API. There's a lot of documentation coming with OpenCV, just have a look into the \lstinline|doc| folder of your OpenCV installation. The easiest way to get started is the \textit{OpenCV Cheat Sheet (C++)} (\lstinline|opencv_cheatsheet.pdf|), because it shows you how to use all the functions with examples. The \textit{The OpenCV Reference Manual} (\lstinline|opencv2refman.pdf|) is the definite guide to the API (500+ pages). Of course, you'll need a book or other literature for understanding computer vision algorithms - I can't give an introduction to this here.
 
 \subsection{Downloading and Building the Source Code}
 
-Only a high-level description of the implementation is given, because pasting the complete code doesn't make any sense. I wanted to explain some implementation details, but I am afraid it would confuse people. The source code is available at \url{http://www.github.com/bytefish/opencv}:
+Only a high-level description of the implementation is given, because pasting the complete code doesn't make any sense. The source code is available at \url{http://www.github.com/bytefish/opencv} and none of the projects have additional dependencies.
 
 \begin{itemize}
 	\item \textbf{Eigenfaces}: \url{https://github.com/bytefish/opencv/tree/master/eigenfaces}
@@ -24,6 +25,7 @@ However, if you don't have \href{http://git-scm.com/}{git} on your system you ca
 \end{itemize}
 
 Building the demo executables is then as simple as (assuming you are in a projects folder):
+
 \begin{lstlisting}
 mkdir build
 cd build
@@ -33,6 +35,7 @@ make
 \end{lstlisting}
 
 Or if you are on Windows with MinGW you would do:
+
 \begin{lstlisting}
 mkdir build
 cd build
@@ -267,7 +270,8 @@ int main(int argc, char *argv[]) {
 \end{lstlisting}
 
 \subsection{Linear Discriminant Analysis}
-The Fisherfaces method includes a Linear Discriminant Analysis, so you get this class for free. Please read section \label{ssection:fisherfaces}, which explains why you can't use this method directly on image data.
+
+The Fisherfaces method includes a Linear Discriminant Analysis, so you get this class for free.
 
 \subsubsection{Definition}
 \begin{lstlisting}[language=c++]

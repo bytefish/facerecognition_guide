@@ -22,3 +22,4 @@ clean:
 	rm *.out
 	rm *.blg
 	rm *.aux
+	rm *.toc
