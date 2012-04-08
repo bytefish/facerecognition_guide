@@ -57,6 +57,7 @@ The Eigenfaces method then performs face recognition by:
 \end{enumerate}
 
 Still there's one problem left to solve. Imagine we are given $400$ images sized $100 \times 100$ pixel. The Principal Component Analysis solves the covariance matrix $S = X X^{T}$, where ${size}(X) = 10000 \times 400$ in our example. You would end up with a $10000 \times 10000$ matrix, roughly $0.8 GB$. Solving this problem isn't feasible, so we'll need to apply a trick. From your linear algebra lessons you know that a $M \times N$ matrix with $M > N$ can only have $N - 1$ non-zero eigenvalues. So it's possible to take the eigenvalue decomposition $S = X^{T} X$ of size $N x N$ instead:
+
 \begin{equation}
 	X^{T} X v_{i} = \lambda_{i} v{i}
 \end{equation}
@@ -70,42 +71,16 @@ and get the original eigenvectors of $S = X X^{T}$ with a left multiplication of
 The resulting eigenvectors are orthogonal, to get orthonormal eigenvectors they need to be normalized to unit length. I don't want to turn this into a publication, so please look into \cite{Duda2001} for the derivation and proof of the equations.
 
 \ifx\python\undefined 
-	\subsubsection{Eigenfaces in GNU Octave/MATLAB}
+\subsubsection{Eigenfaces in GNU Octave/MATLAB}
 \else
- \subsubsection{Eigenfaces in Python}
+\subsubsection{Eigenfaces in Python}
 \fi
 
 
 \label{ssection:example_eigenfaces}
 
-It's always useful to prototype algorithms before implementing them with OpenCV, because this gives you an idea what the solution looks like. I've used \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} and \href{http://www.python.org}{Python} with \href{http://www.scipy.org}{NumPy} (and \href{http://matplotlib.sourceforge.net/}{matplotlib}) in this document. Please compile the document version you prefer. I recently switched to Python, because OpenCV2 uses \href{http://www.scipy.org}{NumPy} arrays since OpenCV 2.3. This means: all algorithms using \href{http://www.numpy.org}{NumPy} play fine with OpenCV's Python bindings, that's great news! Full-blown \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} and Python environments are available at \url{https://github.com/bytefish/facerec}, including:
-\begin{itemize}
-	\item Preprocessing 
-	\begin{itemize}
-		\item Histogram Equalization
-		\item Local Binary Patterns
-		\item TanTriggs Preprocessing \cite{Tan10}
-	\end{itemize}
-	\item Feature Extraction
-	\begin{itemize}
-		\item Eigenfaces \cite{PT91}
-		\item Fisherfaces \cite{belhumeru97}
-		\item Local Binary Patterns Histograms \cite{Ahonen04}
-	\end{itemize}
-	\item Classifier
-		\begin{itemize}
-			\item k-Nearest Neighbor Model (with various metrics)
-			\item Support Vector Machine \cite{Vapnik1998}
-		\end{itemize}
-	\item Cross Validation
-	\begin{itemize}
-		\item k-fold CV 
-		\item Leave One Out CV
-		\item Leave One Subject Out CV
-	\end{itemize}
-\end{itemize}
+I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own database or start with one of the available databases, \href{http://face-rec.org/databases/}{face-rec.org/databases} gives an up-to-date overview. Three interesting databases are\footnote{Parts of the description are quoted from \href{http://face-rec.org}{face-rec.org}.}:
 
-We'll only implement important algorithms, still I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own database or start with one of the available databases, \href{http://face-rec.org/databases/}{face-rec.org/databases} gives an up-to-date overview. Three interesting databases are\footnote{Parts of the description are quoted from \href{http://face-rec.org}{face-rec.org}.}:
 
 \begin{description}
 
@@ -142,7 +117,7 @@ philipp@mango:~/facerec/data/at$ tree
 
 \ifx\python\undefined
 	First we'll need a function to list the files for a given path. This can be done with a function similar to Listing \ref{lst:listfiles}.
-	
+
 	\lstinputlisting[caption={\href{src/m/list\_files.m}{src/m/list\_files.m} \label{lst:listfiles}}, language=matlab]{src/m/list_files.m}
 \fi
 
@@ -151,7 +126,7 @@ The function in Listing \ref{lst:readimages} can be used to read in the images f
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/read\_images.m}{src/m/read\_images.m} \label{lst:readimages}}, language=matlab]{src/m/read_images.m}
 \else
-	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:readimages}}, language=python, linerange={1-3, 18-39}]{src/py/tinyfacerec/util.py}
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:readimages}}, language=python, linerange={18-39}]{src/py/tinyfacerec/util.py}
 \fi
 
 We want to plot some data, so we need a method to turn data into a representation \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://matplotlib.sourceforge.net/}{matplotlib} \fi understands. The image data is excepted as unsigned integer values in range $[0,255]$, so we need a function to normalize the data first (Listing \ref{lst:normalize}):
