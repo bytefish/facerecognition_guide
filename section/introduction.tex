@@ -1,15 +1,29 @@
 \section{Introduction}
 
-\href{http://opencv.willowgarage.com}{OpenCV (Open Source Computer Vision)} is a popular computer vision library started by \href{http://www.intel.com}{Intel} in 1999. The cross-platform library sets its focus on real-time image processing and includes patent-free implementations of the latest computer vision algorithms. In 2008 \href{http://www.willowgarage.com}{Willow Garage} took over support and OpenCV 2.3.1 now comes with a programming interface to C, C++, \href{http://www.python.org}{Python} and \href{http://www.android.com}{Android}. OpenCV is released under a BSD license, so it is used in academic and commercial projects such as \href{http://www.google.com/streetview}{Google Streetview}.
+In this document I'll show you how to implement the Eigenfaces \cite{PT91} and Fisherfaces \cite{belhumeru97} method with \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python}\fi{}, so you'll understand the basics of Face Recognition. All concepts are explained in detail, but a basic knowledge of \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python}\fi{} is assumed. Originally this document was a Guide to Face Recognition with OpenCV. Since \href{http://www.opencv.org}{OpenCV} now comes with the \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/facerec_api.html}{cv::FaceRecognizer}, this document has been reworked into the official OpenCV documentation at:
 
-This document is the guide I've wished for, when I was working myself into face recognition. It helps you with installing OpenCV2 on your machine and explains you how to build a project on Windows and Linux. Two face recognition algorithms are prototyped with \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python}\fi{} and implemented with the OpenCV2 C++ API. All concepts are explained in detail, but a basic knowledge of C++ is assumed. I've decided to leave the C++ implementation details out (as I am afraid they confuse people) and provide you with examples how to use the projects. \href{http://www.mingw.org}{MinGW} (the GCC port for Windows) is used as the C/C++ compiler for Windows, because it works great with OpenCV2 and comes under terms of a public license (please see \href{http://www.mingw.org/license}{mingw.org/license} for details). If someone writes a similar guide for Microsoft Visual Studio 2008/2010, I would be happy to add it to the document.
+\begin{itemize}
+  \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/index.html}{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/index.html}
+\end{itemize}
 
-You don't need to copy and paste the code snippets, the code has been pushed into my github repository:
+I am doing all this in my spare time and I simply can't maintain two separate documents on the same topic any more. So I have decided to turn this document into a guide on Face Recognition with \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python}\fi{} only. You'll find the very detailed documentation on the OpenCV \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/facerec_api.html}{cv::FaceRecognizer} at:
+
+\begin{itemize}
+  \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/index.html}{FaceRecognizer - Face Recognition with OpenCV}
+  \begin{itemize}
+    \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/facerec_api.html}{FaceRecognizer API}
+    \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/facerec_tutorial.html}{Guide to Face Recognition with OpenCV}
+    \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/tutorial/facerec_gender_classification.html}{Tutorial on Gender Classification}
+    \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/tutorial/facerec_video_recognition.html}{Tutorial on Face Recognition in Videos}
+    \item \href{http://docs.opencv.org/trunk/modules/contrib/doc/facerec/tutorial/facerec_save_load.html}{Tutorial On Saving \& Loading a FaceRecognizer}
+  \end{itemize}
+\end{itemize}
+
+By the way you don't need to copy and paste the code snippets, all code has been pushed into my github repository:
 
 \begin{itemize}
   \item \href{http://www.github.com/bytefish}{github.com/bytefish}
   \item \href{http://www.github.com/bytefish/facerecognition_guide}{github.com/bytefish/facerecognition\_guide}
-  \item \href{http://www.github.com/bytefish/opencv}{github.com/bytefish/libfacerec}
 \end{itemize}
 
-All code is released under a \href{http://www.opensource.org/licenses/bsd-license}{BSD license}, so feel free to use it for your projects. Note: You are currently reading the \ifx\python\undefined GNU Octave/MATLAB version of this document, you can compile the Python version with \lstinline|make python|.\else Python version of this document, you can compile the GNU Octave/MATLAB version wth \lstinline|make octave|.\fi
+Everything in here is released under a \href{http://www.opensource.org/licenses/bsd-license}{BSD license}, so feel free to use it for your projects. You are currently reading the \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python}\fi{} version of the Face Recognition Guide, you can compile the \ifx\python\undefined \href{http://www.python.org}{Python} \else \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB}\fi{} version with \ifx\python\undefined \lstinline|make python| \else \lstinline|make octave|\fi{}.

@@ -10,6 +10,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{geometry}
+
 \geometry{a4paper, top=25mm, left=30mm, right=25mm, bottom=30mm,
          headsep=10mm, footskip=12mm}
 
@@ -25,8 +26,9 @@
 \usepackage[margin=10pt]{caption}
 
 % set the title
+
 \title{\begin{tabular}{p{11cm}}\centering
-Face Recognition with OpenCV2
+Face Recognition with \ifx\python\undefined GNU Octave/MATLAB \else Python\fi
 \end{tabular}}
 
 % contact details
@@ -94,11 +96,7 @@ Face Recognition with OpenCV2
 
 \input{section/introduction}
 \input{section/facerecognition}
-\input{section/implementation}
 \input{section/conclusion}
-
-\appendix
-\input{section/installation}
 
 \bibliography{bib/facerec}
 \bibliographystyle{acm}

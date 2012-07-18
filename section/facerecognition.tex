@@ -8,6 +8,65 @@ The Eigenfaces method described in \cite{PT91} took a holistic approach to face 
 
 Recently various methods for a local feature extraction emerged. To avoid the high-dimensionality of the input data only local regions of an image are described, the extracted features are (hopefully) more robust against partial occlusion, illumation and small sample size. Algorithms used for a local feature extraction are Gabor Wavelets (\cite{Wiskott97}), Discrete Cosinus Transform (\cite{Cardinaux2006}) and Local Binary Patterns (\cite{Ahonen04,Maturana09, Rodriguez2006}). It's still an open research question how to preserve spatial information when applying a local feature extraction, because spatial information is potentially useful information.
 
+\subsection{Face Database}
+
+I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own database or start with one of the available databases, \href{http://face-rec.org/databases/}{face-rec.org/databases} gives an up-to-date overview. Three interesting databases are\footnote{Parts of the description are quoted from \href{http://face-rec.org}{face-rec.org}.}:
+
+\begin{description}
+
+	\item[\href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase}] The AT\&T Facedatabase, sometimes also known as \textit{ORL Database of Faces}, contains ten different images of each of 40 distinct subjects. For some subjects, the images were taken at different times, varying the lighting, facial expressions (open / closed eyes, smiling / not smiling) and facial details (glasses / no glasses). All the images were taken against a dark homogeneous background with the subjects in an upright, frontal position (with tolerance for some side movement).
+	
+	\item[\href{http://vision.ucsd.edu/content/yale-face-database}] The AT\&T Facedatabase is good for initial tests, but it's a fairly easy database. The Eigenfaces method already has a 97\% recognition rate, so you won't see any improvements with other algorithms. The Yale Facedatabase A is a more appropriate dataset for initial experiments, because the recognition problem is harder. The database consists of 15 people (14 male, 1 female) each with 11 grayscale images sized $320 \times 243$ pixel. There are changes in the light conditions (center light, left light, right light), facial expressions (happy, normal, sad, sleepy, surprised, wink) and glasses (glasses, no-glasses). 
+	
+The original images are not cropped or aligned. I've prepared a Python script available in \lstinline|src/py/crop_face.py|, that does the job for you.
+	
+	\item[\href{http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html}{Extended Yale Facedatabase B}] The Extended Yale Facedatabase B contains 2414 images of 38 different people in its cropped version. The focus is on extracting features that are robust to illumination, the images have almost no variation in emotion/occlusion/$\ldots$. I personally think, that this dataset is too large for the experiments I perform in this document, you better use the \href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase}. A first version of the Yale Facedatabase B was used in \cite{belhumeru97} to see how the Eigenfaces and Fisherfaces method (section \ref{ssection:fisherfaces}) perform under heavy illumination changes. \cite{Lee2005} used the same setup to take 16128 images of 28 people. The Extended Yale Facedatabase B is the merge of the two databases, which is now known as Extended Yalefacedatabase B.
+
+\end{description}
+
+The face images need to be stored in a folder hierachy similar to \lstinline|<datbase name>/<subject name>/<filename>.<ext>|. The \href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase} for example comes in such a hierarchy, see Listing \ref{lst:att}.
+
+\begin{lstlisting}[caption={\label{lst:att}}, language=,]
+philipp@mango:~/facerec/data/at$ tree
+.
+|-- README
+|-- s1
+|   |-- 1.pgm
+|   |-- ...
+|   |-- 10.pgm
+|-- s2
+|   |-- 1.pgm
+|   |-- ...
+|   |-- 10.pgm
+...
+|-- s40
+|   |-- 1.pgm
+|   |-- ...
+|   |-- 10.pgm
+\end{lstlisting}
+
+\ifx\python\undefined 
+\subsubsection{Reading the images with GNU Octave/MATLAB}
+\else
+\subsubsection{Reading the images with Python}
+\fi
+
+
+\ifx\python\undefined
+	First we'll need a function to list the files for a given path. This can be done with a function similar to Listing \ref{lst:listfiles}.
+
+	\lstinputlisting[caption={\href{src/m/list\_files.m}{src/m/list\_files.m} \label{lst:listfiles}}, language=matlab]{src/m/list_files.m}
+\fi
+
+The function in Listing \ref{lst:readimages} can be used to read in the images for each subfolder of a given directory. Each directory is given a unique (integer) label, you probably want to store the folder name as well. The function returns the images\ifx\python\undefined{} as a data matrix\fi{} and the corresponding classes\ifx\python\undefined, the width and height of the images (we'll need this in later code)\fi{}. This function is really basic and there's much to enhance, but it does its job.
+
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/read\_images.m}{src/m/read\_images.m} \label{lst:readimages}}, language=matlab]{src/m/read_images.m}
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:readimages}}, language=python, linerange={18-39}]{src/py/tinyfacerec/util.py}
+\fi
+
+
 \subsection{Eigenfaces}
 
 \lstset{language=matlab}
@@ -76,78 +135,11 @@ The resulting eigenvectors are orthogonal, to get orthonormal eigenvectors they 
 \subsubsection{Eigenfaces in Python}
 \fi
 
-
-\label{ssection:example_eigenfaces}
-
-I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own database or start with one of the available databases, \href{http://face-rec.org/databases/}{face-rec.org/databases} gives an up-to-date overview. Three interesting databases are\footnote{Parts of the description are quoted from \href{http://face-rec.org}{face-rec.org}.}:
-
-
-\begin{description}
-
-	\item[\href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase}] The AT\&T Facedatabase, sometimes also known as \textit{ORL Database of Faces}, contains ten different images of each of 40 distinct subjects. For some subjects, the images were taken at different times, varying the lighting, facial expressions (open / closed eyes, smiling / not smiling) and facial details (glasses / no glasses). All the images were taken against a dark homogeneous background with the subjects in an upright, frontal position (with tolerance for some side movement).
-	
-	\item[\href{http://cvc.yale.edu/projects/yalefaces/yalefaces.html}{Yale Facedatabase A}] The AT\&T Facedatabase is good for initial tests, but it's a fairly easy database. The Eigenfaces method already has a 97\% recognition rate, so you won't see any improvements with other algorithms. The Yale Facedatabase A is a more appropriate dataset for initial experiments, because the recognition problem is harder. The database consists of 15 people (14 male, 1 female) each with 11 grayscale images sized $320 \times 243$ pixel. There are changes in the light conditions (center light, left light, right light), facial expressions (happy, normal, sad, sleepy, surprised, wink) and glasses (glasses, no-glasses). 
-	
-	Bad news is it's not available for public download anymore, because the original server seems to be down. You can find some sites mirroring it (\href{http://vismod.media.mit.edu/vismod/classes/mas622-00/datasets/}{like the MIT}), but I can't make guarantees about the integrity. If you need to crop and align images yourself, read my notes at \href{http://bytefish.de/blog/fisherfaces}{bytefish.de/blog/fisherfaces}.
-	
-	\item[\href{http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html}{Extended Yale Facedatabase B}] The Extended Yale Facedatabase B contains 2414 images of 38 different people in its cropped version. The focus is on extracting features that are robust to illumination, the images have almost no variation in emotion/occlusion/$\ldots$. I personally think, that this dataset is too large for the experiments I perform in this document, you better use the \href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase}. A first version of the Yale Facedatabase B was used in \cite{belhumeru97} to see how the Eigenfaces and Fisherfaces method (section \ref{ssection:fisherfaces}) perform under heavy illumination changes. \cite{Lee2005} used the same setup to take 16128 images of 28 people. The Extended Yale Facedatabase B is the merge of the two databases, which is now known as Extended Yalefacedatabase B.
-
-\end{description}
-
-The face images need to be stored in a folder hierachy similar to \lstinline|<datbase name>/<subject name>/<filename>.<ext>|. The \href{http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html}{AT\&T Facedatabase} for example comes in such a hierarchy, see Listing \ref{lst:att}.
-
-\begin{lstlisting}[caption={\label{lst:att}}, language=,]
-philipp@mango:~/facerec/data/at$ tree
-.
-|-- README
-|-- s1
-|   |-- 1.pgm
-|   |-- ...
-|   |-- 10.pgm
-|-- s2
-|   |-- 1.pgm
-|   |-- ...
-|   |-- 10.pgm
-...
-|-- s40
-|   |-- 1.pgm
-|   |-- ...
-|   |-- 10.pgm
-\end{lstlisting}
-
-\ifx\python\undefined
-	First we'll need a function to list the files for a given path. This can be done with a function similar to Listing \ref{lst:listfiles}.
-
-	\lstinputlisting[caption={\href{src/m/list\_files.m}{src/m/list\_files.m} \label{lst:listfiles}}, language=matlab]{src/m/list_files.m}
-\fi
-
-The function in Listing \ref{lst:readimages} can be used to read in the images for each subfolder of a given directory. Each directory is given a unique (integer) label, you probably want to store the folder name as well. The function returns the images\ifx\python\undefined{} as a data matrix\fi{} and the corresponding classes\ifx\python\undefined, the width and height of the images (we'll need this in later code)\fi{}. This function is really basic and there's much to enhance, but it does its job.
-
-\ifx\python\undefined
-	\lstinputlisting[caption={\href{src/m/read\_images.m}{src/m/read\_images.m} \label{lst:readimages}}, language=matlab]{src/m/read_images.m}
-\else
-	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:readimages}}, language=python, linerange={18-39}]{src/py/tinyfacerec/util.py}
-\fi
-
-We want to plot some data, so we need a method to turn data into a representation \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://matplotlib.sourceforge.net/}{matplotlib} \fi understands. The image data is excepted as unsigned integer values in range $[0,255]$, so we need a function to normalize the data first (Listing \ref{lst:normalize}):
-
-\ifx\python\undefined
-	\lstinputlisting[caption={\href{src/m/normalize.m}{src/m/normalize.m} \label{lst:normalize}}, language=matlab]{src/m/normalize.m}
-\else
-	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:normalize}}, language=python, linerange={5-16}]{src/py/tinyfacerec/util.py}
-\fi
-
 \ifx\python\undefined
 \else
 	We've already seen, that the Eigenfaces and Fisherfaces method expect a data matrix with observations by row (or column if you prefer it). Listing \ref{lst:matrices} defines two functions to reshape a list of multi-dimensional data into a data matrix. Note, that all samples are assumed to be of equal size.
 
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:matrices}}, language=python, linerange={41-55}]{src/py/tinyfacerec/util.py}
-\fi
-
-\ifx\python\undefined
-	Listing \ref{lst:toGrayscale} then turns the image into the expected representation, by first normalizing the values to a range between $[0,255]$ and then casting the matrix to unsigned integer values.
-	
-	\lstinputlisting[caption={\href{src/m/toGrayscale.m}{src/m/toGrayscale.m} \label{lst:toGrayscale}}, language=matlab]{src/m/toGrayscale.m}
 \fi
 
 Translating the PCA from the algorithmic description of section \ref{ssection:pca_algorithm} to \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://www.python.org}{Python} \fi is almost trivial. Don't copy and paste from this document, the source code is available in folder \ifx\python\undefined \lstinline|src/m|\else \lstinline|src/py/tinyfacerec|\fi. Listing \ref{lst:pca} implements the Principal Component Analysis given by Equation \ref{eqn:pca_mean}, \ref{eqn:pca_cov} and \ref{eqn:pca_eigenvalues}. It also implements the inner-product PCA formulation, which occurs if there are more dimensions than samples. You can shorten this code, I just wanted to point out how it works.
@@ -174,7 +166,7 @@ The same applies to the reconstruction in Equation \ref{eqn:pca_reconstruction}:
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/subspace.py}{src/py/tinyfacerec/subspace.py} \label{lst:reconstruct}}, language=python, linerange={8-11}]{src/py/tinyfacerec/subspace.py}
 \fi
 
-Now that everything is defined it's time for the fun stuff. The face images are read with Listing \ref{lst:readimages} and then a full PCA (see Listing \ref{lst:pca}) is performed. \ifx\python\ifx\python\undefined \else I'll use the great \href{http://matplotlib.sourceforge.net/}{matplotlib} library for plotting in \href{http://www.python.org}{Python}, please install it if you haven't done already.\fi
+Now that everything is defined it's time for the fun stuff. The face images are read with Listing \ref{lst:readimages} and then a full PCA (see Listing \ref{lst:pca}) is performed. \ifx\python\undefined \else I'll use the great \href{http://matplotlib.sourceforge.net/}{matplotlib} library for plotting in \href{http://www.python.org}{Python}, please install it if you haven't done already.\fi
 
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca1}}, language=matlab, linerange={1-9}]{src/m/example_eigenfaces.m}
@@ -182,7 +174,31 @@ Now that everything is defined it's time for the fun stuff. The face images are 
 	\lstinputlisting[caption={\href{src/py/scripts/example\_pca.py}{src/py/scripts/example\_pca.py} \label{lst:example_pca1}}, language=python, linerange={1-14}]{src/py/scripts/example_pca.py}
 \fi
 
-That's it already. Pretty easy, no? Each principal component has the same length as the original image, thus it can be displayed as an image. These ghostly looking faces are called the \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll do a subplot for the first (at most) 16 Eigenfaces. \ifx\python\undefined \else In Python a \lstinline|subplot| method needs to be defined (see \url{src/py/tinyfacerec/visual.py}) to simplify the plotting. The method plots a list data, sets the title and color scale of the images.\fi
+That's it already. Pretty easy, no? Each principal component has the same length as the original image, thus it can be displayed as an image. \cite{PT91} referred to these ghostly looking faces as \textit{Eigenfaces}, that's where the Eigenfaces method got its name from. We'll now want to look at the Eigenfaces, but first of all we need a method to turn the data into a representation \ifx\python\undefined \href{http://www.gnu.org/software/octave/}{GNU Octave}/\href{http://www.mathworks.com}{MATLAB} \else \href{http://matplotlib.sourceforge.net/}{matplotlib} \fi understands. The eigenvectors we have calculated can contain negative values, but the image data is excepted as unsigned integer values in the range of  $0$ to $255$. So we need a function to normalize the data first (Listing \ref{lst:normalize}):
+
+\ifx\python\undefined
+	\lstinputlisting[caption={\href{src/m/normalize.m}{src/m/normalize.m} \label{lst:normalize}}, language=matlab]{src/m/normalize.m}
+	
+		Listing \ref{lst:toGrayscale} then turns the image into the expected representation, by first normalizing the values to a range between $[0,255]$ and then casting the matrix to unsigned integer values.
+	
+	\lstinputlisting[caption={\href{src/m/toGrayscale.m}{src/m/toGrayscale.m} \label{lst:toGrayscale}}, language=matlab]{src/m/toGrayscale.m}
+
+\else
+	\lstinputlisting[caption={\href{src/py/tinyfacerec/util.py}{src/py/tinyfacerec/util.py} \label{lst:normalize}}, language=python, linerange={5-16}]{src/py/tinyfacerec/util.py}
+\fi
+
+\ifx\python\undefined 
+
+Listing \ref{lst:example_pca2} then does a subplot for the first (at most) 16 Eigenfaces. 
+
+\else 
+
+In Python we'll then define a \lstinline|subplot| method (see \url{src/py/tinyfacerec/visual.py}) to simplify the plotting. The method takes a list of images, a title, color scale and finally generates a subplot:
+
+\lstinputlisting[caption={\href{src/py/tinyfacerec/visual.py}{src/py/tinyfacerec/visual.py} \label{lst:subplot}}, language=python, linerange={1-24}]{src/py/tinyfacerec/visual.py}
+
+This simplified the \href{http://www.python.org}{Python} script in Listing \ref{lst:example_pca2} to:
+\fi
 
 \ifx\python\undefined
 	\lstinputlisting[caption={\href{src/m/example\_eigenfaces.m}{src/m/example\_eigenfaces.m} \label{lst:example_pca2}}, language=matlab, linerange={10-19}]{src/m/example_eigenfaces.m}
@@ -237,7 +253,7 @@ We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconst
 	
 	\lstinputlisting[caption={\href{src/py/tinyfacerec/model.py}{src/py/tinyfacerec/model.py} \label{lst:eigenfaces_eigenfaces_model}}, language=python, linerange={30-41}]{src/py/tinyfacerec/model.py}
 	
-		Now that the \lstinline|EigenfacesModel| is defined, it can be used to learn the Fisherfaces and generate predictions. In the following Listing \ref{lst:example_model_eigenfaces} we'll load the Yale Facedatabase A and perform a prediction on the first image.
+		Now that the \lstinline|EigenfacesModel| is defined, it can be used to learn the Eigenfaces and generate predictions. In the following Listing \ref{lst:example_model_eigenfaces} we'll load the Yale Facedatabase A and perform a prediction on the first image.
 		
 	\lstinputlisting[caption={\href{src/py/scripts/example\_model\_eigenfaces.py}{src/py/scripts/example\_model\_eigenfaces.py} \label{lst:example_model_eigenfaces}}, language=python]{src/py/scripts/example_model_eigenfaces.py}
 
@@ -398,5 +414,3 @@ The Fisherfaces allow a reconstruction of the projected image, just like the Eig
 	\lstinputlisting[caption={\href{src/py/scripts/example\_model\_fisherfaces.py}{src/py/scripts/example\_model\_fisherfaces.py} \label{lst:example_model_fisherfaces}}, language=python]{src/py/scripts/example_model_fisherfaces.py}
 
 \fi
-
-
