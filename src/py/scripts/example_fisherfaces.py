@@ -27,7 +27,7 @@ if __name__ == '__main__':
 	    e = W[:,i].reshape(X[0].shape)
 	    E.append(normalize(e,0,255))
     # plot them and store the plot to "python_fisherfaces_fisherfaces.pdf"
-    subplot(title="Fisherfaces AT&T Facedatabase", images=E, rows=4, cols=4, sptitle="Fisherface", colormap=cm.jet, filename="python_fisherfaces_fisherfaces.pdf")
+    subplot(title="Fisherfaces AT&T Facedatabase", images=E, rows=4, cols=4, sptitle="Fisherface", colormap=cm.jet, filename="python_fisherfaces_fisherfaces.png")
 
     from tinyfacerec.subspace import project, reconstruct
 
