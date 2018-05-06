@@ -322,7 +322,7 @@ S_{B} v_{i} & = & \lambda_{i} S_w v_{i} \nonumber \\
 S_{W}^{-1} S_{B} v_{i} & = & \lambda_{i} v_{i}
 \end{eqnarray}
 
-There's one problem left to solve: The rank of $S_{W}$ is at most $(N-c)$, with $N$ samples and $c$ classes. In pattern recognition problems the number of samples $N$ is almost always samller than the dimension of the input data (the number of pixels), so the scatter matrix $S_{W}$ becomes singular (see \cite{Raudys1991}). In \cite{belhumeru97} this was solved by performing a Principal Component Analysis on the data and projecting the samples into the $(N-c)$-dimensional space. A Linear Discriminant Analysis was then performed on the reduced data, because $S_{W}$ isn't singular anymore.
+There's one problem left to solve: The rank of $S_{W}$ is at most $(N-c)$, with $N$ samples and $c$ classes. In pattern recognition problems the number of samples $N$ is almost always smaller than the dimension of the input data (the number of pixels), so the scatter matrix $S_{W}$ becomes singular (see \cite{Raudys1991}). In \cite{belhumeru97} this was solved by performing a Principal Component Analysis on the data and projecting the samples into the $(N-c)$-dimensional space. A Linear Discriminant Analysis was then performed on the reduced data, because $S_{W}$ isn't singular anymore.
 
 The optimization problem can be rewritten as:
 
